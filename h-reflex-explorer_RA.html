@@ -1,0 +1,1617 @@
+<!doctype html>
+<html lang="en-AU">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>H-Reflex Explorer</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600&family=IBM+Plex+Sans:wght@400;500;600;700&display=swap">
+<style>
+/* Layout: three columns on the Explore tab — controls | slow-motion pathway | what PowerLab records.
+   Challenges tab: list on the left, one large predict–observe–explain card. Key ideas tab: reference cards. */
+:root {
+  --bg: #eef2f6;
+  --panel: #ffffff;
+  --surface: var(--panel);
+  --soft: #f3f6f9;
+  --soft-2: #e8edf3;
+  --ink: #16212e;
+  --ink-2: #475466;
+  --muted: #6c7a8c;
+  --line: #d9e0e8;
+  --grid: #e6ebf0;
+  --accent: #0e6a8c;
+  --accent-soft: #e3f1f7;
+  --btn: #16212e;
+  --btn-ink: #ffffff;
+  --gold: #f2b53a;
+  --gold-ink: #4a3400;
+  --good: #11815f;
+  --good-soft: #e6f5ef;
+  --bad-soft: #fbecea;
+  /* data hues (validated blue / orange / aqua) */
+  --h: #2a78d6;
+  --m: #eb6834;
+  --anti: #1baf7a;
+  --col: #e34948;
+  --h-soft: rgba(42,120,214,.10);
+  --m-soft: rgba(235,104,52,.10);
+  --ia-fibre: #8fb3e0;
+  --mn-fibre: #e9ab8e;
+  --wm: #f3f4f6; --wm-edge: #bfc8d0; --gm: #dde3e8;
+  --nerve: #efe7d2; --nerve-edge: #cdbf9c;
+  --muscle: #e5a09f; --muscle-hi: #f6d0cc; --muscle-lo: #c9747a; --muscle-edge: #bf6f76; --spindle: #fff6f2;
+  --tendon: #f4eddd; --tendon-edge: #d9ccb0; --stim-box: #24313c;
+  --stim: #c98a00;
+  --plot: #ffffff;
+  --shadow: 0 1px 2px rgba(22,33,46,.05), 0 10px 26px -12px rgba(22,33,46,.16);
+  --f-body: "IBM Plex Sans", "Segoe UI", system-ui, -apple-system, sans-serif;
+  --f-mono: "IBM Plex Mono", ui-monospace, "SFMono-Regular", Menlo, Consolas, monospace;
+  --fs: 15px;
+  --r: 16px;
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --bg: #0c1116; --panel: #141b22; --soft: #1a232c; --soft-2: #212c36; --ink: #e5ecf2; --ink-2: #aab6c2; --muted: #7e8c99;
+    --line: #28333e; --grid: #1f2a33; --accent: #5bb6da; --accent-soft: #15303c; --btn: #e5ecf2; --btn-ink: #0d141a;
+    --gold: #e0a52b; --gold-ink: #1d1400; --good: #3cc08f; --good-soft: #123027; --bad-soft: #36201f;
+    --h: #3987e5; --m: #d95926; --anti: #199e70; --col: #e66767; --h-soft: rgba(57,135,229,.16); --m-soft: rgba(217,89,38,.16);
+    --ia-fibre: #33587f; --mn-fibre: #7a4431;
+    --wm: #1c252c; --wm-edge: #3a4a54; --gm: #2b3740; --nerve: #2a281f; --nerve-edge: #4d4735;
+    --muscle: #7a4448; --muscle-edge: #a0666a; --spindle: #f3e3df; --muscle-hi: #9a5a5e; --muscle-lo: #5a2e33; --tendon: #6d6552; --tendon-edge: #8a8068; --stim-box: #3b4957; --stim: #f0c24a; --plot: #10171d;
+    --shadow: 0 1px 2px rgba(0,0,0,.3), 0 10px 26px -14px rgba(0,0,0,.6);
+    color-scheme: dark;
+  }
+}
+:root[data-theme="dark"] {
+  --bg: #0c1116; --panel: #141b22; --soft: #1a232c; --soft-2: #212c36; --ink: #e5ecf2; --ink-2: #aab6c2; --muted: #7e8c99;
+  --line: #28333e; --grid: #1f2a33; --accent: #5bb6da; --accent-soft: #15303c; --btn: #e5ecf2; --btn-ink: #0d141a;
+  --gold: #e0a52b; --gold-ink: #1d1400; --good: #3cc08f; --good-soft: #123027; --bad-soft: #36201f;
+  --h: #3987e5; --m: #d95926; --anti: #199e70; --col: #e66767; --h-soft: rgba(57,135,229,.16); --m-soft: rgba(217,89,38,.16);
+  --ia-fibre: #33587f; --mn-fibre: #7a4431;
+  --wm: #1c252c; --wm-edge: #3a4a54; --gm: #2b3740; --nerve: #2a281f; --nerve-edge: #4d4735;
+  --muscle: #7a4448; --muscle-edge: #a0666a; --spindle: #f3e3df; --muscle-hi: #9a5a5e; --muscle-lo: #5a2e33; --tendon: #6d6552; --tendon-edge: #8a8068; --stim-box: #3b4957; --stim: #f0c24a; --plot: #10171d;
+  --shadow: 0 1px 2px rgba(0,0,0,.3), 0 10px 26px -14px rgba(0,0,0,.6);
+  color-scheme: dark;
+}
+:root.presenter { --fs: 18px; }
+
+* { box-sizing: border-box; }
+html { -webkit-text-size-adjust: 100%; }
+body { margin: 0; background: var(--bg); color: var(--ink); font-family: var(--f-body); font-size: var(--fs); line-height: 1.45; }
+button, input, select { font: inherit; color: inherit; }
+:focus-visible { outline: 3px solid color-mix(in srgb, var(--accent) 45%, transparent); outline-offset: 2px; }
+.mono { font-family: var(--f-mono); font-variant-numeric: tabular-nums; }
+.sr { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; }
+
+/* ---------- header ---------- */
+.app-header {
+  position: sticky; top: env(safe-area-inset-top, 0px); z-index: 30;
+  display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 10px 18px;
+  padding-inline: 24px; padding-block: 12px; background: color-mix(in srgb, var(--panel) 94%, transparent);
+  backdrop-filter: blur(12px); border-bottom: 1px solid var(--line);
+}
+.brand { display: flex; align-items: center; gap: 12px; min-width: 0; }
+.mark { width: 40px; height: 40px; border-radius: 12px; display: grid; place-items: center; background: var(--btn); color: var(--btn-ink); flex: none; }
+.brand h1 { margin: 0; font-size: 1.1em; letter-spacing: -.01em; }
+.brand p { margin: 1px 0 0; font-size: .8em; color: var(--muted); }
+.hdr-actions { display: flex; align-items: center; gap: 8px; flex-wrap: wrap; }
+.tabbar { display: flex; gap: 3px; padding: 4px; border-radius: 12px; background: var(--soft-2); }
+.tab { border: 0; background: transparent; border-radius: 9px; padding: 8px 16px; min-height: 40px; cursor: pointer; font-weight: 500; color: var(--ink-2); }
+.tab[aria-selected="true"] { background: var(--panel); color: var(--ink); font-weight: 700; box-shadow: 0 2px 8px rgba(0,0,0,.08); }
+.tab .n { font-family: var(--f-mono); font-size: .78em; color: var(--muted); margin-left: 4px; font-weight: 500; }
+.hbtn { border: 1px solid var(--line); background: var(--panel); border-radius: 10px; min-height: 40px; padding: 6px 13px; cursor: pointer; font-weight: 500; }
+.hbtn[aria-pressed="true"] { background: var(--btn); color: var(--btn-ink); border-color: var(--btn); }
+
+main { max-width: 1560px; margin: 0 auto; padding-inline: 24px; padding-block: 20px 40px; }
+.tab-panel[hidden] { display: none; }
+
+/* ---------- generic ---------- */
+.panel { background: var(--panel); border: 1px solid var(--line); border-radius: var(--r); box-shadow: var(--shadow); min-width: 0; }
+.kicker { color: var(--accent); text-transform: uppercase; letter-spacing: .1em; font-size: .68em; font-weight: 700; }
+.sec-head { display: flex; justify-content: space-between; align-items: flex-start; gap: 10px 14px; flex-wrap: wrap; margin-bottom: 10px; }
+.sec-head h2, .sec-head h3 { margin: 2px 0 0; font-size: 1.02em; letter-spacing: -.01em; }
+.legend { display: flex; flex-wrap: wrap; gap: 4px 12px; font-size: .74em; color: var(--ink-2); align-items: center; }
+.legend span { display: inline-flex; align-items: center; gap: 5px; }
+.sw { display: inline-block; width: 16px; height: 4px; border-radius: 3px; }
+.sw.h { background: var(--h); } .sw.m { background: var(--m); }
+.dot { width: 10px; height: 10px; border-radius: 50%; display: inline-block; }
+.dot.h { background: var(--h); } .dot.m { background: var(--m); } .dot.ring { background: var(--panel); box-shadow: inset 0 0 0 2.2px var(--muted); }
+.btn { border: 0; border-radius: 10px; min-height: 42px; padding: 8px 14px; cursor: pointer; font-weight: 600; background: var(--soft-2); touch-action: manipulation; }
+.btn.primary { background: var(--btn); color: var(--btn-ink); }
+.btn.accent { background: var(--gold); color: var(--gold-ink); }
+.btn.sm { min-height: 32px; padding: 4px 10px; font-size: .82em; font-weight: 500; border-radius: 8px; }
+.btn[aria-pressed="true"] { background: var(--btn); color: var(--btn-ink); }
+.btn:disabled { opacity: .45; cursor: not-allowed; }
+.seg { display: grid; grid-auto-flow: column; grid-auto-columns: 1fr; gap: 4px; padding: 4px; border-radius: 12px; background: var(--soft-2); }
+.seg button { border: 0; background: transparent; border-radius: 9px; min-height: 40px; padding: 6px 8px; cursor: pointer; font-size: .86em; color: var(--ink-2); }
+.seg button[aria-pressed="true"] { background: var(--panel); color: var(--ink); font-weight: 700; box-shadow: 0 2px 8px rgba(0,0,0,.08); }
+.seg.sm button { min-height: 32px; font-size: .8em; }
+.metrics { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 8px; margin-top: 10px; }
+.metric { background: var(--soft); border-radius: 11px; padding: 8px 6px; text-align: center; min-width: 0; }
+.metric span { display: block; color: var(--muted); font-size: .7em; }
+.metric strong { font-family: var(--f-mono); font-variant-numeric: tabular-nums; font-size: .95em; font-weight: 600; }
+
+/* ---------- explore grid ---------- */
+.explore-grid { display: grid; grid-template-columns: 290px minmax(0, 0.85fr) minmax(0, 1.15fr); gap: 18px; align-items: start; }
+.controls { padding: 18px; }
+.pathway { overflow: hidden; }
+.traces { display: grid; gap: 18px; min-width: 0; }
+@media (max-width: 1240px) {
+  .explore-grid { grid-template-columns: 290px minmax(0, 1fr); }
+  .traces { grid-column: 1 / -1; grid-template-columns: repeat(2, minmax(0, 1fr)); }
+}
+@media (max-width: 860px) {
+  .explore-grid { display: flex; flex-direction: column; }
+  .controls { position: static; }
+  .traces { grid-template-columns: minmax(0, 1fr); }
+}
+
+/* controls */
+.field + .field { margin-top: 16px; }
+.flabel { font-size: .82em; font-weight: 700; margin-bottom: 6px; display: flex; justify-content: space-between; align-items: baseline; gap: 8px; }
+.flabel .val { font-family: var(--f-mono); font-size: 1.05em; }
+.note { color: var(--muted); font-size: .74em; margin-top: 5px; }
+.range-row { display: grid; grid-template-columns: 42px minmax(0, 1fr) 42px; gap: 8px; align-items: center; }
+.stepper { border: 0; border-radius: 10px; background: var(--soft-2); min-height: 42px; font-weight: 700; font-size: 1.1em; cursor: pointer; touch-action: manipulation; }
+input[type=range] { width: 100%; accent-color: var(--gold); height: 32px; background: transparent; cursor: pointer; }
+.ticks { display: flex; justify-content: space-between; margin: -2px 50px 0; font-size: .7em; color: var(--muted); font-family: var(--f-mono); }
+.fire-row { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-top: 14px; }
+.dock-val { display: none; }
+.speed-row { display: grid; grid-template-columns: minmax(0, 1fr) auto; gap: 6px; align-items: center; }
+.toggles { display: grid; gap: 8px; }
+.toggle { display: grid; grid-template-columns: minmax(0, 1fr) auto; gap: 10px; align-items: center; padding: 9px 11px; border-radius: 12px; background: var(--soft); cursor: pointer; }
+.toggle strong { display: block; font-size: .82em; }
+.toggle small { color: var(--muted); font-size: .72em; display: block; }
+.toggle input { appearance: none; width: 42px; height: 24px; border-radius: 999px; background: var(--line); position: relative; cursor: pointer; margin: 0; transition: background .2s; flex: none; }
+.toggle input::after { content: ""; position: absolute; top: 3px; left: 3px; width: 18px; height: 18px; border-radius: 50%; background: #fff; box-shadow: 0 1px 3px rgba(0,0,0,.25); transition: transform .2s; }
+.toggle input:checked { background: var(--accent); }
+.toggle input:checked::after { transform: translateX(18px); }
+@media (max-width: 720px) {
+  body.on-explore { padding-bottom: 96px; }
+  .dock {
+    position: fixed; left: 0; right: 0; bottom: 0; z-index: 25; margin: 0 !important;
+    display: grid; grid-template-columns: 44px minmax(0, 1fr) 44px auto; gap: 8px; align-items: center;
+    padding: 10px 16px calc(10px + env(safe-area-inset-bottom, 0px));
+    background: var(--panel); border-top: 1px solid var(--line); box-shadow: 0 -8px 24px -12px rgba(0,0,0,.35);
+  }
+  .dock .range-row { display: contents; }
+  .dock input[type=range] { display: none; }
+  .dock-val { display: block; text-align: center; font-family: var(--f-mono); font-weight: 600; font-size: 1.25em; grid-column: 2; grid-row: 1; }
+  .dock #minusBtn { grid-column: 1; grid-row: 1; } .dock #plusBtn { grid-column: 3; grid-row: 1; }
+  .dock .fire-row { display: contents; }
+  .dock #stimulateBtn { grid-column: 4; grid-row: 1; padding-inline: 18px; }
+  .dock #sweepBtn, .dock .ticks, .dock .note, .dock .flabel { display: none; }
+}
+
+/* pathway */
+.path-top { padding: 16px 18px 4px; }
+.back { margin-top: 8px; }
+.svg-wrap { padding: 0 8px; }
+#schem { display: block; width: 100%; height: auto; max-height: max(460px, calc(100vh - 330px)); margin: 0 auto; font-family: var(--f-body); }
+#schem .stim-lbl { fill: #ffffff; font-size: 14px; font-weight: 700; }
+#schem .stim-val { fill: var(--gold); font-family: var(--f-mono); font-size: 14px; font-weight: 600; }
+#schem .lbl-spindle { fill: var(--h); font-weight: 700; font-size: 13px; }
+#schem text { fill: var(--ink-2); font-size: 13px; }
+#schem .lbl-strong { fill: var(--ink); font-weight: 600; }
+#schem .lbl-small { font-size: 11.5px; fill: var(--muted); }
+#schem .tnum { font-family: var(--f-mono); fill: var(--ink); font-weight: 600; }
+#schem .lbl-ia { fill: var(--h); font-weight: 600; }
+#schem .lbl-mn { fill: var(--m); font-weight: 600; }
+.presenter #schem text { font-size: 15px; }
+.presenter #schem .lbl-small { font-size: 13px; }
+.strip { display: grid; grid-template-columns: auto minmax(0, 1fr) auto; gap: 12px; align-items: center; margin: 4px 14px 12px; padding: 11px 13px; border-radius: 13px; background: var(--soft); }
+.stage { width: 34px; height: 34px; border-radius: 50%; display: grid; place-items: center; background: var(--btn); color: var(--btn-ink); font-weight: 700; font-family: var(--f-mono); }
+.strip strong { display: block; font-size: .88em; }
+.strip span.t { color: var(--ink-2); font-size: .78em; }
+.tags { display: flex; flex-wrap: wrap; gap: 5px; justify-content: flex-end; }
+.tag { padding: 3px 9px; border-radius: 999px; font-size: .7em; font-weight: 700; background: var(--panel); border: 1.5px solid var(--line); white-space: nowrap; }
+.tag.h { color: var(--h); border-color: color-mix(in srgb, var(--h) 45%, transparent); }
+.tag.m { color: var(--m); border-color: color-mix(in srgb, var(--m) 45%, transparent); }
+.tag.c { color: var(--col); border-color: color-mix(in srgb, var(--col) 45%, transparent); }
+.tag.off { color: var(--muted); border-color: var(--line); font-weight: 500; }
+.insight { margin: 0 14px 14px; padding: 11px 14px; border-left: 4px solid var(--accent); background: var(--accent-soft); border-radius: 6px 12px 12px 6px; font-size: .85em; min-height: 2.9em; display: grid; grid-template-columns: auto minmax(0, 1fr); gap: 8px; align-items: baseline; }
+.insight .when { font-family: var(--f-mono); font-size: .92em; color: var(--ink); white-space: nowrap; }
+.insight b { color: var(--ink); }
+@media (max-width: 520px) { .strip { grid-template-columns: auto minmax(0, 1fr); } .tags { grid-column: 1 / -1; justify-content: flex-start; } }
+
+/* trace cards */
+.card { padding: 16px; }
+.canvas-box { position: relative; }
+.canvas-box canvas { display: block; width: 100%; border-radius: 8px; }
+.card-tools { display: flex; flex-wrap: wrap; gap: 6px; align-items: center; margin-top: 10px; }
+.card-tools .sp { flex: 1; }
+.card-tools select { border: 1px solid var(--line); background: var(--panel); border-radius: 8px; min-height: 32px; padding: 2px 6px; font-size: .82em; }
+#curveBox { position: relative; }
+#curve { display: block; width: 100%; }
+#curve text { fill: var(--ink-2); font-family: var(--f-body); }
+.tip { position: absolute; pointer-events: none; background: var(--btn); color: var(--btn-ink); font-size: .76em; padding: 3px 7px; border-radius: 6px; white-space: nowrap; transform: translate(-50%, -125%); font-family: var(--f-mono); }
+.model-note { margin: 10px 2px 0; color: var(--muted); font-size: .72em; }
+.tablebox { max-height: 180px; overflow: auto; margin-top: 10px; border: 1px solid var(--line); border-radius: 10px; }
+.tablebox table { border-collapse: collapse; width: 100%; font-family: var(--f-mono); font-variant-numeric: tabular-nums; font-size: .78em; }
+.tablebox th, .tablebox td { padding: 4px 8px; text-align: right; border-bottom: 1px solid var(--grid); white-space: nowrap; }
+.tablebox th { position: sticky; top: 0; background: var(--soft); font-family: var(--f-body); font-weight: 600; }
+
+/* ---------- challenges ---------- */
+.ch-layout { max-width: 1060px; margin: 0 auto; display: grid; grid-template-columns: 250px minmax(0, 1fr); gap: 18px; align-items: start; }
+.ch-nav { padding: 14px; position: sticky; top: 90px; }
+.ch-progress { font-size: .78em; color: var(--muted); margin: 0 4px 10px; }
+.ch-bar { height: 5px; border-radius: 3px; background: var(--soft-2); margin: 0 4px 12px; overflow: hidden; }
+.ch-bar i { display: block; height: 100%; background: var(--good); width: 0; transition: width .3s; }
+.ch-list { display: grid; gap: 4px; }
+.ch-link { text-align: left; border: 0; background: transparent; border-radius: 10px; padding: 9px 10px; cursor: pointer; font-size: .8em; display: grid; grid-template-columns: 20px minmax(0, 1fr) auto; gap: 6px; align-items: start; color: var(--ink-2); }
+.ch-link:hover { background: var(--soft); }
+.ch-link .num { font-family: var(--f-mono); color: var(--muted); }
+.ch-link.active { background: var(--btn); color: var(--btn-ink); font-weight: 600; }
+.ch-link.active .num { color: inherit; }
+.ch-link .ok { color: var(--good); font-weight: 700; }
+.ch-link.active .ok { color: inherit; }
+.ch-card { padding: clamp(20px, 4vw, 42px); min-height: 520px; }
+.ch-card h2 { margin: 6px 0 10px; font-size: clamp(1.45em, 3vw, 2.2em); line-height: 1.12; letter-spacing: -.03em; text-wrap: balance; }
+.ch-card .prompt { font-size: 1.05em; max-width: 68ch; margin: 0; color: var(--ink-2); }
+.steps3 { display: flex; gap: 6px; flex-wrap: wrap; margin: 18px 0 0; }
+.steps3 span { font-size: .72em; font-weight: 700; letter-spacing: .08em; text-transform: uppercase; padding: 4px 10px; border-radius: 999px; background: var(--soft); color: var(--muted); }
+.steps3 span.on { background: var(--accent-soft); color: var(--accent); }
+.steps3 span.done { background: var(--good-soft); color: var(--good); }
+.preds { display: grid; gap: 9px; margin: 18px 0; }
+.pred { text-align: left; border: 1px solid var(--line); background: var(--soft); border-radius: 12px; padding: 13px 15px; min-height: 50px; cursor: pointer; font-size: .98em; }
+.pred:hover { border-color: var(--muted); }
+.pred.sel { border-color: var(--accent); background: var(--accent-soft); box-shadow: inset 0 0 0 1px var(--accent); }
+.pred.right { border-color: var(--good); background: var(--good-soft); box-shadow: inset 0 0 0 1px var(--good); }
+.pred.wrong { border-color: var(--col); background: var(--bad-soft); }
+.pred:disabled { cursor: default; }
+.ch-actions { display: flex; flex-wrap: wrap; gap: 9px; align-items: center; }
+.ch-actions .hint { font-size: .8em; color: var(--muted); }
+.explain { margin-top: 20px; padding: 18px; border-radius: 14px; background: var(--soft); display: grid; gap: 8px; }
+.explain h3 { margin: 0; font-size: 1em; }
+.explain p { margin: 0; color: var(--ink-2); }
+.explain .analogy { color: var(--accent); font-weight: 600; }
+.explain .ask { border-top: 1px solid var(--line); padding-top: 8px; font-size: .92em; }
+@media (max-width: 860px) {
+  .ch-layout { grid-template-columns: minmax(0, 1fr); }
+  .ch-nav { position: static; }
+  .ch-list { display: flex; overflow-x: auto; padding-bottom: 4px; }
+  .ch-link { white-space: nowrap; grid-template-columns: auto auto auto; }
+  .ch-card { min-height: 0; }
+}
+
+/* ---------- key ideas ---------- */
+.ideas { max-width: 1080px; margin: 0 auto; display: grid; gap: 16px; }
+.hero { padding: clamp(22px, 4vw, 40px); }
+.hero h2 { margin: 6px 0 8px; font-size: clamp(1.5em, 3vw, 2.3em); letter-spacing: -.03em; line-height: 1.12; text-wrap: balance; }
+.hero p { margin: 0; max-width: 72ch; color: var(--ink-2); }
+.idea-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 16px; }
+.idea { padding: 20px; }
+.idea h3 { margin: 0 0 8px; font-size: 1em; }
+.idea p, .idea li { color: var(--ink-2); font-size: .9em; }
+.idea p { margin: 0 0 8px; }
+.idea ol, .idea ul { margin: 0; padding-left: 20px; display: grid; gap: 5px; }
+.idea.wide { grid-column: 1 / -1; }
+.tbl-wrap { overflow-x: auto; }
+.tbl { width: 100%; border-collapse: collapse; font-size: .85em; }
+.tbl th, .tbl td { text-align: left; padding: 8px 8px; border-bottom: 1px solid var(--line); vertical-align: top; }
+.tbl th { color: var(--muted); font-size: .8em; font-weight: 600; }
+.tbl td.num { font-family: var(--f-mono); white-space: nowrap; }
+@media (max-width: 760px) { .idea-grid { grid-template-columns: minmax(0, 1fr); } }
+
+.footer { text-align: center; color: var(--muted); font-size: .72em; padding: 0 24px 28px; }
+dialog { border: 1px solid var(--line); border-radius: 16px; padding: 0; background: var(--panel); color: var(--ink); width: min(660px, calc(100vw - 32px)); box-shadow: 0 24px 80px rgba(0,0,0,.3); }
+dialog::backdrop { background: rgba(10,16,24,.5); }
+.dlg { padding: 22px 24px 8px; }
+.dlg h2 { margin: 0 0 10px; font-size: 1.15em; }
+.dlg p, .dlg li { color: var(--ink-2); font-size: .88em; }
+.dlg-actions { display: flex; justify-content: flex-end; border-top: 1px solid var(--line); padding: 12px 18px; }
+@media (max-width: 720px) {
+  .app-header { position: static; padding-inline: 16px; }
+  .hdr-actions { width: 100%; }
+  .tabbar { flex: 1 1 100%; }
+  .tab { flex: 1; padding-inline: 8px; }
+  main { padding-inline: 16px; padding-top: 14px; }
+  .hide-sm { display: none; }
+}
+@media (prefers-reduced-motion: reduce) { * { transition: none !important; } }
+</style>
+</head>
+<body>
+<header class="app-header">
+  <div class="brand">
+    <div class="mark" aria-hidden="true"><svg viewBox="0 0 24 24" width="22" height="22"><path d="M2 13h4l2-6 3 12 2.5-9 1.5 3h7" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linejoin="round" stroke-linecap="round"/></svg></div>
+    <div><h1>H-Reflex Explorer</h1><p>Follow the impulses. Predict the trace. Explain the collision.</p></div>
+  </div>
+  <div class="hdr-actions">
+    <nav class="tabbar" role="tablist" aria-label="Sections">
+      <button class="tab" role="tab" id="tab-explore" aria-controls="panel-explore" aria-selected="true">Explore</button>
+      <button class="tab" role="tab" id="tab-challenges" aria-controls="panel-challenges" aria-selected="false">Challenges<span class="n" id="tabCount">0/11</span></button>
+      <button class="tab" role="tab" id="tab-ideas" aria-controls="panel-ideas" aria-selected="false">Key ideas</button>
+    </nav>
+    <button class="hbtn hide-sm" id="btnPresenter" aria-pressed="false">Presenter mode</button>
+    <button class="hbtn" id="btnTheme" title="Colour theme">Theme: auto</button>
+    <button class="hbtn" id="btnAbout">About</button>
+  </div>
+</header>
+
+<main>
+  <!-- ================= EXPLORE ================= -->
+  <section class="tab-panel" id="panel-explore" role="tabpanel" aria-labelledby="tab-explore">
+    <div class="explore-grid">
+      <aside class="panel controls" aria-label="Stimulus controls">
+        <div class="sec-head"><div><div class="kicker">Set the experiment</div><h2>Stimulus controls</h2></div></div>
+
+        <div class="field">
+          <div class="flabel">Preparation</div>
+          <div class="seg" role="group" aria-label="Preparation" id="segPrep">
+            <button data-prep="fcr" aria-pressed="true">FCR · median</button>
+            <button data-prep="soleus" aria-pressed="false">Soleus · tibial</button>
+          </div>
+          <div class="note" id="prepNote">Your PowerLab practical setup</div>
+        </div>
+
+        <div class="field">
+          <div class="flabel">Mode</div>
+          <div class="seg" role="group" aria-label="Stimulus type" id="segMode">
+            <button data-mode="elec" aria-pressed="true">Electrical</button>
+            <button data-mode="tap" aria-pressed="false">Tendon tap</button>
+          </div>
+        </div>
+
+        <div class="field dock" id="dock">
+          <div class="flabel"><label for="intensity" id="sliderLabel">Stimulus current</label><output class="val" id="stimValue" for="intensity">2 mA</output></div>
+          <div class="range-row">
+            <button class="stepper" id="minusBtn" aria-label="Decrease by one step">−</button>
+            <input type="range" id="intensity" min="0" max="10" step="1" value="2">
+            <button class="stepper" id="plusBtn" aria-label="Increase by one step">+</button>
+          </div>
+          <div class="dock-val" id="dockVal" aria-hidden="true">2 mA</div>
+          <div class="ticks" id="ticks"><span>0</span><span>5</span><span>10 mA</span></div>
+          <div class="note" id="pulseNote">1 ms pulse · class sweep 2–10 mA</div>
+          <div class="fire-row">
+            <button class="btn primary" id="stimulateBtn">▶ Stimulate</button>
+            <button class="btn accent" id="sweepBtn">Auto-sweep</button>
+          </div>
+        </div>
+
+        <div class="field">
+          <div class="flabel">Slow motion</div>
+          <div class="speed-row">
+            <div class="seg sm" role="group" aria-label="Playback speed" id="segSpeed">
+              <button data-speed="50">50×</button><button data-speed="200" aria-pressed="true">200×</button><button data-speed="500">500×</button><button data-speed="0">Off</button>
+            </div>
+            <button class="btn sm" id="btnPause" aria-pressed="false">Pause</button>
+          </div>
+        </div>
+
+        <div class="field">
+          <div class="flabel">Modulation <span class="note" id="modNote" style="margin:0">changes H, not M</span></div>
+          <div class="toggles">
+            <label class="toggle"><span><strong>Jendrassik manoeuvre</strong><small>Raises spinal excitability</small></span><input type="checkbox" id="chkJend"></label>
+            <label class="toggle"><span><strong>Light background contraction</strong><small>Motor neurons nearer threshold; adds EMG</small></span><input type="checkbox" id="chkContr"></label>
+            <label class="toggle"><span><strong>Ageing example</strong><small>Slower conduction; fewer motor units</small></span><input type="checkbox" id="chkAge"></label>
+          </div>
+        </div>
+      </aside>
+
+      <section class="panel pathway" aria-labelledby="pathTitle">
+        <div class="path-top">
+          <div class="sec-head" style="margin:0">
+            <div><div class="kicker">Slow-motion pathway</div><h2 id="pathTitle">Where does each signal go?</h2></div>
+            <div>
+              <div class="legend" aria-label="Legend">
+                <span><i class="dot h"></i>Ia sensory</span>
+                <span><i class="dot m"></i>α motor</span>
+                <span><i class="dot ring"></i>backwards (antidromic)</span>
+                <span><svg width="13" height="13" viewBox="-8 -8 16 16" aria-hidden="true"><polygon points="0,-7 1.8,-2 7,-2 3,1.2 4.4,6.5 0,3.4 -4.4,6.5 -3,1.2 -7,-2 -1.8,-2" fill="var(--gold)"/></svg>collision</span>
+              </div>
+              <button class="btn sm primary back" id="backBtn" hidden>← Back to challenge</button>
+            </div>
+          </div>
+        </div>
+        <div class="svg-wrap"><svg id="schem" role="img" aria-label="H-reflex pathway"></svg></div>
+        <div class="strip">
+          <div class="stage" id="stageNum">–</div>
+          <div><strong id="stageTitle">Ready</strong><span class="t" id="stageText">Set a current and press Stimulate.</span></div>
+          <div class="tags" id="tags"></div>
+        </div>
+        <div class="insight" id="insight" aria-live="polite"><span class="when">Watch for</span><span>The H-reflex takes the long route through the spinal cord, so it appears later on the EMG.</span></div>
+      </section>
+
+      <section class="traces" aria-label="Recordings">
+        <article class="panel card" id="cardTrace">
+          <div class="sec-head">
+            <div><div class="kicker">What PowerLab records</div><h3>Simulated EMG</h3></div>
+            <div class="legend"><span><i class="sw m"></i>M-wave</span><span><i class="sw h"></i><span id="lgH">H-reflex</span></span></div>
+          </div>
+          <div class="canvas-box"><canvas id="trace" aria-label="Simulated EMG sweep"></canvas></div>
+          <div class="metrics">
+            <div class="metric"><span>M amplitude</span><strong id="mAmp">—</strong></div>
+            <div class="metric"><span id="hAmpLbl">H amplitude</span><strong id="hAmp">—</strong></div>
+            <div class="metric"><span id="latLbl">M / H latency</span><strong id="lats">—</strong></div>
+          </div>
+          <div class="card-tools"><span class="note" style="margin:0">Faint lines: your previous sweeps</span><span class="sp"></span><button class="btn sm" id="btnClearTrace">Clear</button></div>
+        </article>
+
+        <article class="panel card" id="cardCurve">
+          <div class="sec-head">
+            <div><div class="kicker">Across the sweep</div><h3 id="curveTitle">Recruitment curve</h3></div>
+            <div class="legend" id="curveLegend"></div>
+          </div>
+          <div id="curveBox"><svg id="curve" role="img" aria-label="Recruitment curve"></svg><div class="tip" id="tip" hidden></div></div>
+          <div class="metrics">
+            <div class="metric"><span id="hMaxLbl">Hmax</span><strong id="hMax">—</strong></div>
+            <div class="metric"><span id="mMaxLbl">Mmax</span><strong id="mMax">—</strong></div>
+            <div class="metric"><span id="ratioLbl">Hmax / Mmax</span><strong id="ratio">—</strong></div>
+          </div>
+          <p class="model-note">Teaching model: shapes and values are illustrative. Real thresholds and amplitudes vary with the participant, electrode placement and posture.</p>
+        </article>
+      </section>
+    </div>
+  </section>
+
+  <!-- ================= CHALLENGES ================= -->
+  <section class="tab-panel" id="panel-challenges" role="tabpanel" aria-labelledby="tab-challenges" hidden>
+    <div class="ch-layout">
+      <aside class="panel ch-nav">
+        <div class="ch-progress" id="chProgress">0 of 11 explained</div>
+        <div class="ch-bar"><i id="chBar"></i></div>
+        <div class="ch-list" id="chList" aria-label="Challenge list"></div>
+      </aside>
+      <article class="panel ch-card" id="chCard" aria-live="polite"></article>
+    </div>
+  </section>
+
+  <!-- ================= KEY IDEAS ================= -->
+  <section class="tab-panel" id="panel-ideas" role="tabpanel" aria-labelledby="tab-ideas" hidden>
+    <div class="ideas">
+      <section class="panel hero">
+        <div class="kicker">The whole picture</div>
+        <h2>One stimulus, two routes, one collision.</h2>
+        <p>The M-wave is the muscle's direct response to motor axons fired at the electrode. The H-reflex is a monosynaptic spinal reflex started by Ia afferents fired at the same electrode. As current rises, the motor axons also carry spikes back towards the cord, and these cancel the returning reflex.</p>
+      </section>
+      <div class="idea-grid">
+        <article class="panel idea">
+          <h3>The sequence to explain (FCR, 2–10 mA)</h3>
+          <ol>
+            <li><b>2–3 mA:</b> the largest axons, the Ia afferents, fire first. A small H-reflex appears with no M-wave.</li>
+            <li><b>3–5 mA:</b> more Ia input recruits more motor neurons, smallest first (size principle). H approaches H<sub>max</sub>.</li>
+            <li><b>≈ 4 mA:</b> motor axons start firing directly. The earlier M-wave appears.</li>
+            <li><b>5–8 mA:</b> M grows. Antidromic motor spikes block more and more reflex spikes, so H falls.</li>
+            <li><b>9–10 mA:</b> M reaches M<sub>max</sub>. Every motor axon is blocked and H disappears.</li>
+          </ol>
+        </article>
+        <article class="panel idea">
+          <h3>Three analogies</h3>
+          <p><b>The direct highway (M):</b> the impulse runs straight from the electrode to the muscle.</p>
+          <p><b>The spinal detour (H):</b> the impulse runs up the Ia afferent, crosses one synapse, and comes back down the motor axon. Same destination, longer trip.</p>
+          <p><b>Two trains, one track (collision):</b> spikes travelling in opposite directions in the same axon meet head-on. Each leaves refractory membrane behind it, so neither can pass.</p>
+        </article>
+        <article class="panel idea">
+          <h3>Spikes spread both ways from the electrode</h3>
+          <p>The current only flows locally, under the electrode. The patch of axon it depolarises has resting membrane on both sides, so the action potential spreads in both directions.</p>
+          <p>In Ia afferents, the spike heading to the spindle goes nowhere: there is no synapse there to pass it on. In motor axons, the spike heading to the cord is the one that collides with the reflex.</p>
+        </article>
+        <article class="panel idea">
+          <h3>The M-wave misconception</h3>
+          <p>The recorded M-wave never visits the spinal cord. It comes from impulses travelling orthodromically from the electrode to the muscle.</p>
+          <p>The same stimulus also sends <b>antidromic</b> impulses up those motor axons. They are not the M-wave, but they cause the collision.</p>
+        </article>
+        <article class="panel idea wide">
+          <h3>What changes what?</h3>
+          <div class="tbl-wrap"><table class="tbl">
+            <thead><tr><th>Manipulation</th><th>M-wave</th><th>H or T response</th><th>Latency</th><th>Why</th></tr></thead>
+            <tbody>
+              <tr><td>Increase current</td><td>Grows to M<sub>max</sub></td><td>Rises, then falls</td><td>Unchanged</td><td>More motor axons fire directly, so more collision</td></tr>
+              <tr><td>Jendrassik</td><td>Unchanged</td><td>Larger</td><td>Unchanged</td><td>Less presynaptic inhibition of Ia terminals; more excitable motor neurons</td></tr>
+              <tr><td>Light contraction</td><td>Unchanged</td><td>Larger, lower threshold</td><td>Unchanged</td><td>Motor neurons sit closer to threshold; background EMG added</td></tr>
+              <tr><td>Ageing</td><td>Smaller M<sub>max</sub></td><td>Smaller H<sub>max</sub>/M<sub>max</sub></td><td>Longer</td><td>Slower conduction; motor-unit loss; reduced Ia input</td></tr>
+              <tr><td>Tendon tap</td><td>Absent</td><td>T-reflex present</td><td>Longer than H</td><td>Starts at the spindle; no motor axons are stimulated, so no collision</td></tr>
+            </tbody>
+          </table></div>
+        </article>
+
+      </div>
+    </div>
+  </section>
+</main>
+<footer class="footer">Designed for concept learning, not clinical interpretation. Individual thresholds, amplitudes and latencies vary.</footer>
+
+<dialog id="about" aria-labelledby="aboutTitle">
+  <div class="dlg">
+    <h2 id="aboutTitle">About this teaching model</h2>
+    <p>The FCR preset mirrors the class practical: median-nerve stimulation at the elbow, flexor carpi radialis surface EMG, 1 ms constant-current pulses, and a 2–10 mA sweep in 1 mA steps. Its latencies are calibrated to the manual's expected windows (M 10–15 ms, H 18–25 ms), so the delay from motor end-plates to the recording electrodes is set longer than in most published onset values. Soleus is a comparison preparation with typical published latencies.</p>
+    <p><b>How it works.</b> A pool of 150 motor neurons is recruited by the Ia volley in order of size (Henneman's size principle). The electrode fires the largest axons first: Ia afferents before motor axons. Any motor axon fired directly carries an antidromic spike that cancels its reflex spike. Pulses move with correct relative timing; distances in the drawing are not to scale. H amplitude varies about 5% from trial to trial; M about 1%.</p>
+    <p><b>Keyboard:</b> Space = Stimulate · ← → = current ± 1 mA · P = pause.</p>
+    <p>In the real practical, leave at least 5–10 s between stimuli to avoid post-activation depression.</p>
+  </div>
+  <div class="dlg-actions"><button class="btn primary" id="closeAbout">Close</button></div>
+</dialog>
+<div class="sr" aria-live="polite" id="srLive"></div>
+<script>
+'use strict';
+// ===== Physiology model (pure; no DOM) =====
+const PREPS = {
+  soleus: {
+    key: 'soleus', muscle: 'Soleus', short: 'Soleus', nerve: 'tibial nerve', site: 'popliteal fossa', segment: 'S1',
+    tendon: 'Achilles tendon',
+    dProx: 0.70, dDist: 0.25,           // m: stim site -> spinal cord; stim site -> muscle
+    cvIa: 65, cvMprox: 55, cvMdist: 50,  // m/s
+    central: 1.0, nmj: 1.0,              // ms
+    mmax: 8.0,                            // mV p-p
+    iaThr: 1.0, iaSat: 5.6, mThr: 4.7, mSat: 9.0, // mA (lab stimulator: 0–10 mA, 1 ms)
+    gain: 0.84, sigM: 1.6, sigH: 1.8, tMax: 50, yRange: 6
+  },
+  fcr: {
+    key: 'fcr', muscle: 'Flexor carpi radialis', short: 'FCR', nerve: 'median nerve', site: 'elbow', segment: 'C6–C7',
+    tendon: 'FCR tendon',
+    dProx: 0.296, dDist: 0.605,        // effective distances (m), set so latencies match the class manual (M ~12 ms, H ~22 ms)
+    cvIa: 70, cvMprox: 62, cvMdist: 55,
+    central: 1.0, nmj: 1.0,
+    mmax: 6.0,
+    iaThr: 0.4, iaSat: 4.0, mThr: 3.2, mSat: 9.0,
+    gain: 0.57, sigM: 1.1, sigH: 1.3, tMax: 40, yRange: 4.5
+  }
+};
+
+function mulberry32(a) {
+  return function () {
+    a |= 0; a = a + 0x6D2B79F5 | 0;
+    let t = Math.imul(a ^ a >>> 15, 1 | a);
+    t = t + Math.imul(t ^ t >>> 7, 61 | t) ^ t;
+    return ((t ^ t >>> 14) >>> 0) / 4294967296;
+  };
+}
+function gauss(rng) { let u = 0, v = 0; while (u === 0) u = rng(); v = rng(); return Math.sqrt(-2 * Math.log(u)) * Math.cos(2 * Math.PI * v); }
+
+const N_MN = 150, N_IA = 60;
+function buildPool(seed) {
+  const r = mulberry32(seed);
+  const mn = [];
+  for (let i = 0; i < N_MN; i++) {
+    const s = i / (N_MN - 1);                 // 0 smallest -> 1 largest
+    const q = Math.min(1, Math.max(0, 0.55 * (1 - s) + 0.45 * r()));
+    mn.push({ s, w: 0.35 + 2.2 * s * s, rt: 0.12 + 0.88 * s, q });
+  }
+  const ia = [];
+  for (let j = 0; j < N_IA; j++) ia.push((r() + r()) / 2);
+  return { mn, ia, wSum: mn.reduce((a, u) => a + u.w, 0) };
+}
+const POOL = buildPool(20260929);
+
+function smooth01(x) { x = Math.min(1, Math.max(0, x)); return x; }
+
+// mods: {jend, contr, age}; mode: 'elec' | 'tap'; x: mA (elec) or % force (tap)
+function derive(prepKey, mods) {
+  const P = PREPS[prepKey];
+  const cvF = mods.age ? 0.85 : 1;
+  const d = {
+    P,
+    cvIa: P.cvIa * cvF, cvMprox: P.cvMprox * cvF, cvMdist: P.cvMdist * cvF,
+    central: P.central + (mods.age ? 0.2 : 0), nmj: P.nmj + (mods.age ? 0.2 : 0),
+    mmax: P.mmax * (mods.age ? 0.85 : 1),
+    exc: (mods.jend ? 1.10 : 1) * (mods.contr ? 1.02 : 1) * (mods.age ? 0.7 : 1),
+    offset: mods.contr ? 0.08 : 0,
+    mech: 2.0 * (mods.age ? 1.1 : 1)
+  };
+  d.tIaStimToCord = P.dProx / d.cvIa * 1000;
+  d.tIaSpindleToStim = P.tSpinMs != null ? P.tSpinMs / cvF : P.dDist / d.cvIa * 1000;
+  d.Tprox = P.dProx / d.cvMprox * 1000;
+  d.Tdist = P.TdistMs != null ? P.TdistMs / cvF : P.dDist / d.cvMdist * 1000;
+  d.latM = d.Tdist + d.nmj;
+  d.latH = d.tIaStimToCord + d.central + d.Tprox + d.Tdist + d.nmj;
+  d.latT = d.mech + d.tIaSpindleToStim + d.latH;
+  return d;
+}
+
+function simulate(prepKey, mode, x, mods, rng) {
+  const d = derive(prepKey, mods), P = d.P;
+  const noise = rng ? gauss(rng) : 0;
+  let iaFrac = 0, iaAct = [];
+  if (mode === 'elec') {
+    POOL.ia.forEach(v => { const thr = P.iaThr + (P.iaSat - P.iaThr) * v; iaAct.push(x >= thr); });
+  } else {
+    POOL.ia.forEach(v => { const thr = 8 + 70 * v; iaAct.push(x >= thr); });
+  }
+  iaFrac = iaAct.filter(Boolean).length / N_IA;
+  const disp = mode === 'tap' ? 0.85 : 1;           // dispersed spindle volley is less synchronous
+  const drive = iaFrac * P.gain * d.exc * disp * (1 + 0.05 * noise) + (iaFrac > 0 ? d.offset : 0);
+  const units = POOL.mn.map(u => {
+    const direct = mode === 'elec' && x >= P.mThr + (P.mSat - P.mThr) * u.q;
+    const reflex = drive > u.rt;
+    return { direct, reflex, collided: direct && reflex, h: reflex && !direct };
+  });
+  const sumW = f => units.reduce((a, u, i) => a + (f(u) ? POOL.mn[i].w : 0), 0) / POOL.wSum;
+  const mJitter = rng ? 1 + 0.01 * gauss(rng) : 1;
+  const M = mode === 'elec' ? d.mmax * sumW(u => u.direct) * mJitter : 0;
+  const H = d.mmax * sumW(u => u.h) * (mode === 'tap' ? 0.9 : 1);
+  // groups for drawing: 5 motor groups by size, 3 Ia groups by threshold
+  const mnG = [0, 1, 2, 3, 4].map(g => {
+    const lo = Math.floor(g * N_MN / 5), hi = Math.floor((g + 1) * N_MN / 5);
+    const seg = units.slice(lo, hi), n = seg.length;
+    const c = f => seg.filter(f).length / n;
+    return { reflex: c(u => u.reflex), direct: c(u => u.direct), collided: c(u => u.collided), h: c(u => u.h) };
+  });
+  const iaSorted = POOL.ia.map((v, i) => ({ v, a: iaAct[i] })).sort((a, b) => a.v - b.v);
+  const iaG = [0, 1, 2].map(g => { const seg = iaSorted.slice(g * 20, g * 20 + 20); return seg.filter(o => o.a).length / 20; });
+  return { d, M, H, iaFrac, drive, mnG, iaG, units, anyCollision: units.some(u => u.collided) };
+}
+
+
+// ===================== App =====================
+const $ = s => document.querySelector(s);
+const $$ = s => Array.from(document.querySelectorAll(s));
+const clamp = (v, a, b) => Math.min(b, Math.max(a, v));
+const NS = 'http://www.w3.org/2000/svg';
+const store = {
+  get(k, d) { try { const v = localStorage.getItem(k); return v == null ? d : JSON.parse(v); } catch (e) { return d; } },
+  set(k, v) { try { localStorage.setItem(k, JSON.stringify(v)); } catch (e) { /* storage unavailable */ } }
+};
+const noiseRng = mulberry32((Date.now() ^ 0x5eed) >>> 0);
+
+const S = {
+  prep: 'fcr', mode: 'elec', xElec: 2, xTap: 70, sweepNo: 0,
+  mods: { jend: false, contr: false, age: false },
+  slow: 200, paused: false, persist: true, range: 5, modelCurve: false,
+  sweep: null, traces: [], data: {}, portrait: false,
+  calloutCount: 0, callout: null, auto: null, tab: 'explore',
+  chIdx: 0, chFromObserve: false, progress: store.get('hx3-progress', {}),
+  presenter: false, theme: 'auto'
+};
+const X = () => S.mode === 'elec' ? S.xElec : S.xTap;
+const modKey = m => (m.jend ? 'J' : '') + (m.contr ? 'C' : '') + (m.age ? 'A' : '');
+const dataKey = (prep = S.prep, mode = S.mode, mods = S.mods) => prep + '|' + mode + '|' + modKey(mods);
+function css(name) { return getComputedStyle(document.documentElement).getPropertyValue(name).trim(); }
+function fmt(v, d = 1) { return (Math.round(v * 10 ** d) / 10 ** d).toFixed(d); }
+
+// ---------- geometry ----------
+function crPath(pts) {
+  let d = `M${pts[0][0].toFixed(1)},${pts[0][1].toFixed(1)}`;
+  for (let i = 0; i < pts.length - 1; i++) {
+    const p0 = pts[i - 1] || pts[i], p1 = pts[i], p2 = pts[i + 1], p3 = pts[i + 2] || p2;
+    const c1 = [p1[0] + (p2[0] - p0[0]) / 6, p1[1] + (p2[1] - p0[1]) / 6];
+    const c2 = [p2[0] - (p3[0] - p1[0]) / 6, p2[1] - (p3[1] - p1[1]) / 6];
+    d += `C${c1[0].toFixed(1)},${c1[1].toFixed(1)} ${c2[0].toFixed(1)},${c2[1].toFixed(1)} ${p2[0].toFixed(1)},${p2[1].toFixed(1)}`;
+  }
+  return d;
+}
+function crClosed(pts) {
+  const n = pts.length; let d = `M${pts[0][0].toFixed(1)},${pts[0][1].toFixed(1)}`;
+  for (let i = 0; i < n; i++) {
+    const p0 = pts[(i - 1 + n) % n], p1 = pts[i], p2 = pts[(i + 1) % n], p3 = pts[(i + 2) % n];
+    const c1 = [p1[0] + (p2[0] - p0[0]) / 6, p1[1] + (p2[1] - p0[1]) / 6];
+    const c2 = [p2[0] - (p3[0] - p1[0]) / 6, p2[1] - (p3[1] - p1[1]) / 6];
+    d += `C${c1[0].toFixed(1)},${c1[1].toFixed(1)} ${c2[0].toFixed(1)},${c2[1].toFixed(1)} ${p2[0].toFixed(1)},${p2[1].toFixed(1)}`;
+  }
+  return d + 'Z';
+}
+const GREY_R = [[0,-14],[14,-20],[30,-48],[44,-76],[56,-84],[63,-74],[48,-44],[40,-18],[62,-2],[84,26],[92,56],[80,82],[50,86],[24,66],[12,34],[0,24]];
+function greyMatter(C, s) {
+  const right = GREY_R.map(([x, y]) => [C[0] + s * x, C[1] + s * y]);
+  const left = GREY_R.slice(1, -1).reverse().map(([x, y]) => [C[0] - s * x, C[1] + s * y]);
+  return crClosed(right.concat(left));
+}
+const SOMA_R = [[28,44,4.5],[46,34,5.5],[64,46,6.5],[40,62,7.5],[66,68,8.5]];
+
+// Geometry drawn so that every fibre segment's on-screen length is proportional to its conduction time.
+// Pulses therefore move at one steady speed, and each one reaches the muscle exactly when its wave appears on the EMG.
+function pathLen(pts) {
+  const p = document.createElementNS('http://www.w3.org/2000/svg', 'path');
+  p.setAttribute('d', crPath(pts)); const host = $('#schem'); host.appendChild(p);
+  const L = p.getTotalLength(); p.remove(); return L;
+}
+function geomScaled() {
+  // Portrait: spinal cord at the top, muscle at the bottom. Fibre lengths on screen are proportional to conduction time.
+  const P = PREPS[S.prep], d = derive(S.prep, {});
+  const W = 440, Xn = 299, Yn = 150;                    // nerve axis; Ia fibres join the nerve at Yn
+  const iaX = [320, 314, 308], mnX = [296, 291, 286, 281, 276];
+  const C = [172, 108], s = 0.58, R = (x, y) => [C[0] + s * x, C[1] + s * y];
+  const EX = [66, 80], ang = [220, 200, 240, 180, 260];
+  const somas = SOMA_R.map(([x, y, r], j) => ({ p: R(EX[0] + 40 * Math.cos(ang[j] * Math.PI / 180), EX[1] + 40 * Math.sin(ang[j] * Math.PI / 180)), r: r * 0.85 }));
+  const MJ = Yn + 8;                                    // motor axons join here
+  const iaRoot = k => [[iaX[k], Yn], [iaX[k] - 8, Yn - 12], [258, 116 + 2 * k], R(110, -8 + 3 * k), R(84, 2 + 2 * k), R(62, 12), R(50 + 5 * k, 20)];
+  const mnRoot = j => [somas[j].p, R(EX[0], EX[1]), [250, 164 + 2 * j], [mnX[j], MJ]];
+  const Rc = pathLen(mnRoot(2));
+  const K = Math.max(500, (Rc + 50) / PREPS.fcr.dProx);   // px per metre, same for both preparations
+  const YS = MJ + K * P.dProx - Rc;                      // cathode position
+  const dDist = d.Tdist * d.cvMdist / 1000;
+  const Y1 = YS + K * dDist - 48;                       // nerve enters the muscle belly here
+  const Ym = Y1 + 50, Xm = 258;                         // belly centre
+  const dx = [-30, -15, 0, 15, 30];
+  const nmj = dx.map((x, j) => [mnX[j] + x, Y1 + Math.sqrt(48 * 48 - x * x)]);
+  const pt = a => a.map(v => v.toFixed(1)).join(',');
+  const bx0 = Xm - 140, bx1 = Xm + 140;                 // belly ends
+  const muscle = `M${bx0},${Ym} C${bx0 + 40},${Ym - 74} ${bx1 - 40},${Ym - 74} ${bx1},${Ym} C${bx1 - 40},${Ym + 74} ${bx0 + 40},${Ym + 74} ${bx0},${Ym}Z`;
+  const tendons = [`M${bx0 + 14},${Ym - 11} C${bx0 - 6},${Ym - 8} ${bx0 - 30},${Ym - 7} ${bx0 - 44},${Ym - 5} Q${bx0 - 52},${Ym} ${bx0 - 44},${Ym + 5} C${bx0 - 30},${Ym + 7} ${bx0 - 6},${Ym + 8} ${bx0 + 14},${Ym + 11}Z`,
+                   `M${bx1 - 14},${Ym - 11} C${bx1 + 6},${Ym - 8} ${bx1 + 22},${Ym - 7} ${bx1 + 34},${Ym - 5} Q${bx1 + 42},${Ym} ${bx1 + 34},${Ym + 5} C${bx1 + 22},${Ym + 7} ${bx1 + 6},${Ym + 8} ${bx1 - 14},${Ym + 11}Z`];
+  const fibreLines = [];
+  for (let i = -4; i <= 4; i++) fibreLines.push(`M${bx0 + 8},${Ym + i * 1.5} C${bx0 + 60},${Ym + i * 14} ${bx1 - 60},${Ym + i * 14} ${bx1 - 8},${Ym + i * 1.5}`);
+  const sp = [Xm + 86, Ym + 16];
+  const H = Math.ceil(Ym + 108);
+  const upper = YS - MJ > Y1 - YS, segA = upper ? MJ + 10 : YS + 30, segB = upper ? YS - 12 : Y1 - 4;
+  const lab = [
+    { x: C[0], y: 34, t: 'cord', c: 'lbl-strong', a: 'middle', id: 'lblCord' },
+    { x: iaX[0] + 18, y: segA + 14, t: 'Ia afferents', c: 'lbl-ia', a: 'start', rot: 90 },
+    { x: mnX[4] - 14, y: segB - 14, t: 'α motor axons', c: 'lbl-mn', a: 'start', rot: -90 },
+    { x: bx0 - 10, y: Ym - 64, t: 'muscle', c: 'lbl-strong', a: 'start', id: 'lblMuscle' },
+    { x: sp[0] + 4, y: Ym + 90, t: 'muscle spindle', c: 'lbl-spindle', a: 'middle', leader: [sp[0] + 4, Ym + 78, sp[0], sp[1] + 8] },
+    { x: Xm - 58, y: Ym + 98, t: 'EMG', c: 'lbl-small', a: 'middle' },
+    { x: R(20, 20)[0] - 4, y: R(20, 22)[1], t: 'one synapse', c: 'lbl-small', a: 'end' }
+  ];
+  const box = [22, YS - 28, 150, 64];
+  lab.push({ x: box[0], y: box[1] - 10, t: 'site', c: 'lbl-small', a: 'start', id: 'lblSite' });
+  const bars = [[Xn - 44, YS - 5, 88, 10], [Xn - 44, YS + 13, 88, 10]];
+  return {
+    W, H, C, s, cordR: [118 * s, 100 * s], portrait: true, YS, Y1, K,
+    ia: [0, 1, 2].map(k => ({
+      A: [[sp[0] - 14 + 7 * k, sp[1]], [sp[0] - 26, sp[1] - 18 - 4 * k], [iaX[k], Y1 + 6], [iaX[k], Y1 - 6], [iaX[k], (YS + Y1) / 2], [iaX[k], YS]],
+      B: [[iaX[k], YS], [iaX[k], (YS + Yn) / 2]].concat(iaRoot(k))
+    })),
+    mn: [0, 1, 2, 3, 4].map(j => ({
+      soma: somas[j],
+      Cc: mnRoot(j).concat([[mnX[j], (YS + MJ) / 2], [mnX[j], YS]]),
+      D: [[mnX[j], YS], [mnX[j], (YS + Y1) / 2], [mnX[j], Y1], nmj[j]]
+    })),
+    nerveBody: [[Xn, Yn - 6], [Xn, Y1 + 8]], nerveW: 60,
+    dorsalRoot: iaRoot(1).slice(0, 3).concat([R(112, -6)]), dRootW: 20,
+    ventralRoot: [R(EX[0] + 4, EX[1] + 2), [250, 168], [Xn - 12, MJ + 4]], vRootW: 22,
+    muscle, muscleC: [Xm, Ym], tendons, fibreLines,
+    spindle: [sp[0], sp[1], 22, 6.5, 0],
+    tendon: null,
+    emg: [[Xm - 78, Ym + 55], [Xm - 38, Ym + 55]], emgWire: `M${Xm - 78},${Ym + 60} L${Xm - 58},${Ym + 84} M${Xm - 38},${Ym + 60} L${Xm - 58},${Ym + 84}`,
+    stim: { box, bars, leads: [[[box[0] + box[2], YS], [bars[0][0], YS]], [[box[0] + box[2], YS + 18], [bars[1][0], YS + 18]]], signs: [[bars[0][0] + bars[0][2] + 12, YS + 5, '−'], [bars[1][0] + bars[1][2] + 12, YS + 23, '+']], label: [bars[0][0] + bars[0][2] + 24, YS + 14] },
+    hammer: { rest: [bx1 + 22, Ym - 46], strike: [bx1 + 22, Ym - 14], vertical: false },
+    labels: lab,
+    time: [16, 30], speed: [16, 50]
+  };
+}
+
+let G = null; // current geometry + element refs
+function el(tag, attrs = {}, parent) {
+  const e = document.createElementNS(NS, tag);
+  for (const k in attrs) e.setAttribute(k, attrs[k]);
+  if (parent) parent.appendChild(e);
+  return e;
+}
+const STAR = (() => { const p = []; for (let i = 0; i < 16; i++) { const r = i % 2 ? 0.42 : 1, a = -Math.PI / 2 + i * Math.PI / 8; p.push((r * Math.cos(a)).toFixed(3) + ',' + (r * Math.sin(a)).toFixed(3)); } return p.join(' '); })();
+
+function buildSchematic() {
+  const g = geomScaled();
+  const P = PREPS[S.prep];
+  const svg = $('#schem');
+  svg.innerHTML = '';
+  svg.setAttribute('viewBox', `0 0 ${g.W} ${g.H}`);
+  const defs = el('defs', {}, svg);
+  const clip = el('clipPath', { id: 'muscleClip' }, defs); el('path', { d: g.muscle }, clip);
+
+  const base = el('g', {}, svg);
+  // cord
+  el('ellipse', { cx: g.C[0], cy: g.C[1], rx: g.cordR[0], ry: g.cordR[1], fill: 'var(--wm)', stroke: 'var(--wm-edge)', 'stroke-width': 1.5 }, base);
+  // roots & nerve sheaths (edge then fill)
+  const sheath = (pts, w) => {
+    el('path', { d: crPath(pts), fill: 'none', stroke: 'var(--nerve-edge)', 'stroke-width': w + 2.5, 'stroke-linecap': 'round' }, base);
+    return pts;
+  };
+  const sheathFill = (pts, w) => el('path', { d: crPath(pts), fill: 'none', stroke: 'var(--nerve)', 'stroke-width': w, 'stroke-linecap': 'round' }, base);
+  sheath(g.dorsalRoot, g.dRootW); sheath(g.ventralRoot, g.vRootW); sheath(g.nerveBody, g.nerveW);
+  sheathFill(g.dorsalRoot, g.dRootW); sheathFill(g.ventralRoot, g.vRootW); sheathFill(g.nerveBody, g.nerveW);
+  // cord grey matter drawn over the root stumps
+  el('ellipse', { cx: g.C[0], cy: g.C[1], rx: g.cordR[0] - 1, ry: g.cordR[1] - 1, fill: 'var(--wm)' }, base);
+  el('path', { d: greyMatter(g.C, g.s), fill: 'var(--gm)', stroke: 'var(--wm-edge)', 'stroke-width': 0.8 }, base);
+  el('circle', { cx: g.C[0], cy: g.C[1] + 4 * g.s, r: 3.2, fill: 'var(--wm)', stroke: 'var(--wm-edge)' }, base);
+  // DRG
+  // muscle
+  const grad = el('linearGradient', { id: 'musGrad', x1: 0, y1: 0, x2: 0, y2: 1 }, defs);
+  el('stop', { offset: '0', style: 'stop-color: var(--muscle-hi)' }, grad); el('stop', { offset: '0.55', style: 'stop-color: var(--muscle)' }, grad); el('stop', { offset: '1', style: 'stop-color: var(--muscle-lo)' }, grad);
+  (g.tendons || []).forEach(d => el('path', { d, fill: 'var(--tendon)', stroke: 'var(--tendon-edge)', 'stroke-width': 1 }, base));
+  el('path', { d: g.muscle, fill: 'url(#musGrad)', stroke: 'var(--muscle-edge)', 'stroke-width': 1.2 }, base);
+  // muscle fibres
+  const stri = el('g', { 'clip-path': 'url(#muscleClip)', fill: 'none' }, base);
+  (g.fibreLines || []).forEach(d => { el('path', { d, stroke: 'var(--muscle-lo)', 'stroke-width': 2.2, opacity: 0.35 }, stri); el('path', { d, stroke: 'var(--muscle-hi)', 'stroke-width': 0.9, opacity: 0.7, transform: 'translate(0,-2)' }, stri); });
+  const muscleGlow = el('path', { d: g.muscle, fill: 'var(--m)', opacity: 0 }, base);
+  const sp = g.spindle;
+  const spindle = el('ellipse', { cx: sp[0], cy: sp[1], rx: sp[2], ry: sp[3], fill: 'var(--spindle)', stroke: 'var(--ia-fibre)', 'stroke-width': 1.6 }, base);
+  const spindleGlow = el('ellipse', { cx: sp[0], cy: sp[1], rx: sp[2] + 3, ry: sp[3] + 3, fill: 'var(--h)', opacity: 0 }, base);
+  // EMG electrodes
+  el('path', { d: g.emgWire, fill: 'none', stroke: 'var(--muted)', 'stroke-width': 1.2 }, base);
+  g.emg.forEach(([x, y]) => el('circle', { cx: x, cy: y, r: 5.5, fill: 'var(--surface)', stroke: 'var(--ink-2)', 'stroke-width': 1.6 }, base));
+
+  // fibres
+  const fib = el('g', { fill: 'none', 'stroke-linecap': 'round' }, svg);
+  g.mn.forEach((m, j) => {
+    m.elC = el('path', { d: crPath(m.Cc), stroke: 'var(--mn-fibre)', 'stroke-width': 1.3 + 0.35 * j }, fib);
+    m.elD = el('path', { d: crPath(m.D), stroke: 'var(--mn-fibre)', 'stroke-width': 1.3 + 0.35 * j }, fib);
+    const e = m.D[m.D.length - 1];
+    el('ellipse', { cx: e[0], cy: e[1], rx: 3.2, ry: 2.2, fill: 'var(--mn-fibre)' }, fib);
+  });
+  g.ia.forEach((a, k) => {
+    a.elA = el('path', { d: crPath(a.A), stroke: 'var(--ia-fibre)', 'stroke-width': 2.8 }, fib);
+    a.elB = el('path', { d: crPath(a.B), stroke: 'var(--ia-fibre)', 'stroke-width': 2.8 }, fib);
+    const t = a.B[a.B.length - 1];
+    g.mn.forEach(m => el('path', { d: `M${t[0]},${t[1]} Q${(t[0] + m.soma.p[0]) / 2 + 4},${(t[1] + m.soma.p[1]) / 2 - 2} ${m.soma.p[0]},${m.soma.p[1] - m.soma.r}`, stroke: 'var(--ia-fibre)', 'stroke-width': 0.9, opacity: 0.8 }, fib));
+    // annulospiral hint on spindle
+    el('circle', { cx: a.A[0][0], cy: a.A[0][1], r: 2, fill: 'var(--ia-fibre)' }, fib);
+  });
+  // somas
+  const somaG = el('g', {}, svg);
+  g.mn.forEach((m, j) => {
+    m.glow = el('circle', { cx: m.soma.p[0], cy: m.soma.p[1], r: m.soma.r + 7, fill: 'var(--h)', opacity: 0 }, somaG);
+    m.somaEl = el('circle', { cx: m.soma.p[0], cy: m.soma.p[1], r: m.soma.r, fill: 'var(--mn-fibre)', stroke: 'var(--ink-2)', 'stroke-width': 0.8 }, somaG);
+  });
+  const term = g.ia.map(a => a.B[a.B.length - 1]);
+  const tc = [term.reduce((s, p) => s + p[0], 0) / 3, term.reduce((s, p) => s + p[1], 0) / 3];
+  const synFlash = el('circle', { cx: tc[0], cy: tc[1], r: 12, fill: 'none', stroke: 'var(--h)', 'stroke-width': 2.5, opacity: 0 }, somaG);
+
+  // stimulator: box, leads, and two bar electrodes spanning the whole nerve (both Ia and motor axons)
+  const st = g.stim, stG = el('g', {}, svg);
+  el('rect', { x: st.box[0], y: st.box[1], width: st.box[2], height: st.box[3], rx: 10, fill: 'var(--stim-box)', stroke: 'var(--stim-box)' }, stG);
+  el('path', { d: `M${st.box[0] + 20},${st.box[1] + 14} l-8,16 h9 l-5,15 16,-20 h-9 l6,-11z`, fill: 'var(--gold)' }, stG);
+  const stimTxt = el('text', { x: st.box[0] + 40, y: st.box[1] + 25, class: 'stim-lbl' }, stG); stimTxt.textContent = 'Stimulator';
+  const stimVal = el('text', { x: st.box[0] + 40, y: st.box[1] + 46, class: 'stim-val' }, stG);
+  const prongs = st.leads.map(p => el('line', { x1: p[0][0], y1: p[0][1], x2: p[1][0], y2: p[1][1], stroke: 'var(--stim-box)', 'stroke-width': 2.4 }, stG));
+  st.bars.forEach(b => prongs.push(el('rect', { x: b[0], y: b[1], width: b[2], height: b[3], rx: 4, fill: 'var(--stim-box)' }, stG)));
+  st.signs.forEach(([x, y, t]) => { const e = el('text', { x, y, 'text-anchor': 'middle', class: 'lbl-strong', 'font-size': 16 }, stG); e.textContent = t; });
+  const stimFlash = el('g', { opacity: 0 }, stG);
+  st.bars.forEach(b => { el('rect', { x: b[0] - 6, y: b[1] - 6, width: b[2] + 12, height: b[3] + 12, rx: 8, fill: 'var(--gold)', opacity: 0.45 }, stimFlash); el('rect', { x: b[0], y: b[1], width: b[2], height: b[3], rx: 4, fill: 'var(--gold)' }, stimFlash); });
+
+  // hammer
+  const hm = g.hammer, ham = el('g', { opacity: 0 }, svg);
+  if (hm.vertical) {
+    el('rect', { x: -6, y: -15, width: 12, height: 30, rx: 3, fill: 'var(--ink-2)' }, ham);
+    el('line', { x1: 6, y1: 0, x2: 70, y2: -12, stroke: 'var(--muted)', 'stroke-width': 4, 'stroke-linecap': 'round' }, ham);
+  } else {
+    el('rect', { x: -11, y: -6, width: 22, height: 12, rx: 3, fill: 'var(--ink-2)' }, ham);
+    el('line', { x1: 0, y1: -6, x2: 9, y2: -80, stroke: 'var(--muted)', 'stroke-width': 4, 'stroke-linecap': 'round' }, ham);
+  }
+
+  // labels
+  const lab = el('g', {}, svg);
+  g.labels.forEach(L => {
+    if (L.leader) el('line', { x1: L.leader[0], y1: L.leader[1], x2: L.leader[2], y2: L.leader[3], stroke: 'var(--muted)', 'stroke-width': 0.8 }, lab);
+    const e = el('text', { x: L.x, y: L.y, 'text-anchor': L.a, class: L.c }, lab);
+    if (L.rot) e.setAttribute('transform', `rotate(${L.rot} ${L.x} ${L.y})`);
+    if (L.id) e.id = L.id;
+    e.textContent = L.t;
+  });
+  const tTxt = el('text', { x: g.time[0], y: g.time[1], class: 'tnum', 'font-size': 20 }, lab);
+  const sTxt = el('text', { x: g.speed[0], y: g.speed[1], class: 'lbl-small' }, lab);
+
+  // dynamic layers
+  const flashes = el('g', {}, svg);
+  const pulses = el('g', {}, svg);
+  const callout = el('g', { opacity: 0, 'pointer-events': 'none' }, svg);
+  const coRect = el('rect', { rx: 8, fill: 'var(--surface)', stroke: 'var(--gold)', 'stroke-width': 2 }, callout);
+  const coT1 = el('text', { class: 'lbl-strong', 'font-size': 13 }, callout);
+  const coT2 = el('text', { class: 'lbl-small' }, callout);
+  const coLine = el('line', { stroke: 'var(--gold)', 'stroke-width': 1.6 }, callout);
+
+  G = Object.assign(g, { svg, muscleGlow, spindleGlow, synFlash, stimVal, prongs, stimFlash, ham, tTxt, sTxt, flashes, pulses, callout, coRect, coT1, coT2, coLine });
+  g.ia.forEach(a => { a.lenA = a.elA.getTotalLength(); a.lenB = a.elB.getTotalLength(); });
+  g.mn.forEach(m => {
+    m.lenC = m.elC.getTotalLength(); m.lenD = m.elD.getTotalLength();
+    m.col = el('polygon', { points: STAR, fill: 'var(--gold)', stroke: 'var(--gold-ink)', 'stroke-width': 0.08, opacity: 0 }, flashes);
+  });
+  // pulse pool
+  G.pool = [];
+  for (let i = 0; i < 24; i++) G.pool.push(mkPulse(pulses));
+  updateLabels();
+  renderSchem();
+}
+function mkPulse(parent) {
+  const g = el('g', { opacity: 0 }, parent);
+  const tr2 = el('circle', { r: 2.2 }, g), tr1 = el('circle', { r: 3 }, g);
+  const halo = el('circle', { r: 11 }, g), core = el('circle', { r: 4.5 }, g);
+  return { g, tr1, tr2, halo, core, kind: null };
+}
+function stylePulse(p, kind) {
+  if (p.kind === kind) return; p.kind = kind;
+  const hue = kind === 'mot' || kind === 'antiM' ? 'var(--m)' : 'var(--h)';
+  const hollow = kind === 'antiM' || kind === 'antiIa';
+  [p.tr1, p.tr2].forEach(c => { c.setAttribute('fill', hue); c.setAttribute('opacity', 0.35); });
+  p.halo.setAttribute('fill', hue); p.halo.setAttribute('opacity', 0.22);
+  p.core.setAttribute('fill', hollow ? 'var(--surface)' : hue);
+  p.core.setAttribute('stroke', hollow ? hue : 'none');
+  p.core.setAttribute('stroke-width', hollow ? 2.4 : 0);
+}
+function updateLabels() {
+  if (!G) return;
+  const P = PREPS[S.prep];
+  const set = (id, t) => { const e = G.svg.querySelector('#' + id); if (e) e.textContent = t; };
+  set('lblCord', `Spinal cord · ${P.segment}`);
+  set('lblNerve', P.nerve[0].toUpperCase() + P.nerve.slice(1));
+  set('lblSite', S.mode === 'elec' ? `Electrodes across the nerve · ${P.site}` : `Stimulator off · ${P.site}`);
+  set('lblMuscle', P.muscle);
+  G.stimVal.textContent = S.mode === 'elec' ? `${fmt(S.xElec, 0)} mA · 1 ms` : 'off';
+  G.svg.setAttribute('aria-label', `Schematic of the ${P.muscle} H-reflex circuit: ${P.segment} spinal cord segment, Ia afferents through the dorsal root ganglion, alpha motor neurons and ventral root, the ${P.nerve} with the stimulating electrode at the ${P.site}, and the muscle with EMG electrodes.`);
+}
+
+// ---------- sweep engine ----------
+function tmplNorm() {
+  let mn = 1e9, mx = -1e9;
+  for (let x = -8; x < 14; x += 0.01) { const v = shape(x); mn = Math.min(mn, v); mx = Math.max(mx, v); }
+  return mx - mn;
+}
+function shape(x) { return -x * Math.exp(-x * x / 2) - 0.14 * Math.exp(-(((x - 2) / 2) ** 2) / 2); }
+const K_NORM = tmplNorm();
+function wave(t, lat, sig) { const x = (t - lat - 2.5 * sig) / sig; return shape(x) / K_NORM; }
+
+function makeSweep(opts = {}) {
+  const prep = S.prep, mode = S.mode, x = X(), mods = { ...S.mods };
+  const res = simulate(prep, mode, x, mods, noiseRng);
+  const d = res.d, P = d.P;
+  const latH = (mode === 'elec' ? d.latH : d.latT) + 0.08 * gauss(noiseRng);
+  const sigH = P.sigH * (mode === 'tap' ? 1.3 : 1) * (mods.age ? 1.1 : 1), sigM = P.sigM * (mods.age ? 1.1 : 1);
+  const tIaCord = mode === 'elec' ? d.tIaStimToCord : d.mech + d.tIaSpindleToStim + d.tIaStimToCord;
+  const tLeave = tIaCord + d.central;
+  const atSoma = tLeave >= d.Tprox;
+  const tCol = atSoma ? tLeave : (d.Tprox + tLeave) / 2;
+  const uCol = atSoma ? 0 : (tCol - tLeave) / d.Tprox;
+  // trace
+  const dt = 0.02, n = Math.round(P.tMax / dt) + 1, v = new Float32Array(n);
+  const noiseSd = 0.009, bgSd = mods.contr ? 0.07 : 0, phi = 0.8; let ar = 0;
+  const art = mode === 'elec' && x > 0 ? Math.min(0.3 + 0.3 * x, 4.8) : 0;
+  for (let i = 0; i < n; i++) {
+    const t = i * dt; let y = 0;
+    if (art) y += t < 1 ? art * (1 - 0.25 * t) : -0.4 * art * Math.exp(-(t - 1) / 0.45);
+    if (res.M > 0) y += res.M * wave(t, d.latM, sigM);
+    if (res.H > 0) y += res.H * wave(t, latH, sigH);
+    ar = phi * ar + gauss(noiseRng) * bgSd * Math.sqrt(1 - phi * phi);
+    y += ar + gauss(noiseRng) * noiseSd;
+    v[i] = y;
+  }
+  const sw = {
+    prep, mode, x, mods, res, d, P, latH, sigH, sigM, tIaCord, tLeave, atSoma, tCol, uCol,
+    dt, v, t: mode === 'tap' ? -4 : 0, tEnd: P.tMax, recorded: false, calloutDone: false,
+    shownEvents: -1, events: []
+  };
+  sw.events = buildEvents(sw);
+  return sw;
+}
+function pct(f) { return Math.round(f * 100) + '%'; }
+function buildEvents(sw) {
+  const { res, d, mode } = sw, E = [];
+  const nReflex = res.units.filter(u => u.reflex).length, nCol = res.units.filter(u => u.collided).length, nDirect = res.units.filter(u => u.direct).length;
+  if (mode === 'elec') {
+    E.push({ t: 0, h: sw.x === 0 ? 'No current: nothing fires.' : res.iaFrac === 0 ? `Stimulus ${fmt(sw.x, 0)} mA: below threshold for every axon.` : `Stimulus ${fmt(sw.x, 0)} mA: ${pct(res.iaFrac)} of Ia fibres fire${nDirect ? `, and ${pct(nDirect / 150)} of motor axons` : ', but no motor axons'}.` });
+    if (res.M > 0.05) E.push({ t: d.latM, h: `<b>M-wave</b> at ${fmt(d.latM)} ms: the direct route to the muscle.` });
+  } else {
+    E.push({ t: -4, h: 'Hammer swinging towards the tendon…' });
+    E.push({ t: 0, h: 'Tap: the stretch lengthens the muscle spindles.' });
+    E.push({ t: d.mech, h: res.iaFrac > 0 ? 'Spindle Ia endings fire.' : 'Tap too gentle: no Ia endings fire.' });
+  }
+  if (res.iaFrac > 0) E.push({ t: sw.tIaCord, h: 'Ia volley reaches the spinal cord: one synapse onto the α motor neurons.' });
+  if (res.iaFrac > 0) E.push({ t: sw.tLeave, h: nReflex ? `${pct(nReflex / 150)} of the motor neurons fire, smallest first.` : 'Ia input too weak: no motor neuron fires.' });
+  if (mode === 'elec' && nCol) E.push({ t: sw.tCol, h: sw.atSoma
+    ? `<b>Collision:</b> antidromic spikes reached ${nCol} motor neurons first, so their reflex spikes are blocked.`
+    : `<b>Collision:</b> ${nCol} reflex spikes meet antidromic spikes head-on and are cancelled.`, col: true });
+  if (res.H > 0.05) E.push({ t: sw.latH, h: `<b>${mode === 'tap' ? 'T-reflex' : 'H-reflex'}</b> at ${fmt(sw.latH)} ms: the long route through the spinal cord.` });
+  else if (nReflex && nCol >= nReflex) E.push({ t: sw.latH, h: 'No H-reflex: every reflex spike was cancelled by collision.' });
+  return E.sort((a, b) => a.t - b.t);
+}
+function fire() {
+  finishSweep();
+  S.sweep = makeSweep(); S.sweepNo++;
+  if (S.slow === 0 || S.auto) { S.sweep.t = S.sweep.tEnd; }
+  S.paused = false; syncPause();
+  if (S.sweep.t >= S.sweep.tEnd) finishSweep();
+  renderAll(true);
+}
+function finishSweep() {
+  const sw = S.sweep; if (!sw || sw.recorded) return;
+  sw.recorded = true;
+  const key = dataKey(sw.prep, sw.mode, sw.mods);
+  (S.data[key] = S.data[key] || []).push({ x: sw.x, H: sw.res.H, M: sw.res.M, latM: sw.mode === 'elec' ? sw.d.latM : null, latH: sw.latH });
+  S.traces.push({ prep: sw.prep, mode: sw.mode, v: sw.v, dt: sw.dt });
+  if (S.traces.length > 12) S.traces.shift();
+  const Hn = sw.mode === 'elec' ? 'H' : 'T';
+  $('#srLive').textContent = `${sw.mode === 'elec' ? fmt(sw.x) + ' mA' : Math.round(sw.x) + '% tap'}: ` +
+    (sw.mode === 'elec' ? `M ${fmt(sw.res.M, 2)} mV at ${fmt(sw.d.latM)} ms, ` : '') + `${Hn} ${fmt(sw.res.H, 2)} mV at ${fmt(sw.latH)} ms.`;
+  renderCurve();
+}
+
+// ---------- schematic per-frame ----------
+function ptOn(elm, len, u) { const p = elm.getPointAtLength(clamp(u, 0, 1) * len); return [p.x, p.y]; }
+function pulseSpecs(sw) {
+  const specs = [], d = sw.d, r = sw.res, g = G;
+  const tA = d.tIaSpindleToStim, tB = d.tIaStimToCord;
+  g.ia.forEach((a, k) => {
+    const amp = r.iaG[k]; if (amp <= 0.02) return;
+    if (sw.mode === 'elec') {
+      specs.push({ kind: 'ia', amp: () => amp, pos: t => t < 0 || t > tB ? null : ptOn(a.elB, a.lenB, t / tB) });
+      specs.push({ kind: 'antiIa', amp: () => amp * 0.45, pos: t => t < 0 || t > tA ? null : ptOn(a.elA, a.lenA, 1 - t / tA) });
+    } else {
+      const t0 = d.mech;
+      specs.push({ kind: 'ia', amp: () => amp, pos: t => {
+        if (t < t0 || t > t0 + tA + tB) return null;
+        return t < t0 + tA ? ptOn(a.elA, a.lenA, (t - t0) / tA) : ptOn(a.elB, a.lenB, (t - t0 - tA) / tB);
+      } });
+    }
+  });
+  g.mn.forEach((m, j) => {
+    const grp = r.mnG[j];
+    const L = sw.atSoma ? grp.h : grp.reflex;
+    if (L > 0.02 || grp.h > 0.02) {
+      specs.push({ kind: 'mot', amp: t => (t < sw.tCol ? L : grp.h), pos: t => {
+        const u = (t - sw.tLeave) / d.Tprox;
+        if (u < 0) return null;
+        if (u <= 1) return ptOn(m.elC, m.lenC, u);
+        const v = (t - sw.tLeave - d.Tprox) / d.Tdist;
+        return v <= 1 ? ptOn(m.elD, m.lenD, v) : null;
+      } });
+    }
+    if (grp.direct > 0.02) {
+      specs.push({ kind: 'mot', amp: () => grp.direct, pos: t => t < 0 || t > d.Tdist ? null : ptOn(m.elD, m.lenD, t / d.Tdist) });
+      specs.push({ kind: 'antiM', amp: t => (!sw.atSoma && t >= sw.tCol ? grp.direct - grp.collided : grp.direct), pos: t => t < 0 || t > d.Tprox ? null : ptOn(m.elC, m.lenC, 1 - t / d.Tprox) });
+    }
+  });
+  return specs;
+}
+function renderSchem() {
+  if (!G) return;
+  const sw = S.sweep, P = PREPS[S.prep];
+  const t = sw ? sw.t : null;
+  G.tTxt.textContent = sw ? `t = ${fmt(Math.max(0, t))} ms` : 't = — ms';
+  G.sTxt.textContent = S.slow ? `${S.slow}× slow motion` : '';
+  const ham = G.hammer, showHam = S.mode === 'tap';
+  G.ham.setAttribute('opacity', showHam ? 1 : 0);
+  let hp = 0;
+  if (sw && sw.mode === 'tap') { hp = t < 0 ? clamp((t + 4) / 4, 0, 1) ** 2 : t < 4 ? 1 - t / 4 : 0; }
+  const hx = ham.rest[0] + (ham.strike[0] - ham.rest[0]) * hp, hy = ham.rest[1] + (ham.strike[1] - ham.rest[1]) * hp;
+  G.ham.setAttribute('transform', `translate(${hx},${hy})`);
+  G.prongs.forEach(p => p.setAttribute('opacity', S.mode === 'elec' ? 1 : 0.3));
+
+  const pool = G.pool; let pi = 0;
+  const hide = () => { for (; pi < pool.length; pi++) pool[pi].g.setAttribute('opacity', 0); };
+  const fd = S.slow ? Math.max(1.5, 500 / S.slow) : 0;
+  if (!sw) {
+    hide(); G.muscleGlow.setAttribute('opacity', 0); G.spindleGlow.setAttribute('opacity', 0); G.synFlash.setAttribute('opacity', 0); G.stimFlash.setAttribute('opacity', 0);
+    G.mn.forEach(m => { m.glow.setAttribute('opacity', 0); m.col.setAttribute('opacity', 0); });
+    G.callout.setAttribute('opacity', 0);
+    return;
+  }
+  const d = sw.d, r = sw.res;
+  if (!sw.specs || sw.specsG !== G) { sw.specs = pulseSpecs(sw); sw.specsG = G; }
+  const animated = S.slow > 0 && t < sw.tEnd;
+  if (animated || t < sw.tEnd) {
+    for (const s of sw.specs) {
+      if (pi >= pool.length) break;
+      const p0 = s.pos(t), a = s.amp(t);
+      if (!p0 || a <= 0.02) continue;
+      const p = pool[pi++]; stylePulse(p, s.kind);
+      const rc = 3.4 + 3.6 * Math.sqrt(a);
+      p.core.setAttribute('cx', p0[0]); p.core.setAttribute('cy', p0[1]); p.core.setAttribute('r', rc);
+      p.halo.setAttribute('cx', p0[0]); p.halo.setAttribute('cy', p0[1]); p.halo.setAttribute('r', rc * 2.5);
+      const q1 = s.pos(t - 0.3) || p0, q2 = s.pos(t - 0.6) || q1;
+      p.tr1.setAttribute('cx', q1[0]); p.tr1.setAttribute('cy', q1[1]); p.tr1.setAttribute('r', rc * 0.7);
+      p.tr2.setAttribute('cx', q2[0]); p.tr2.setAttribute('cy', q2[1]); p.tr2.setAttribute('r', rc * 0.5);
+      p.g.setAttribute('opacity', (0.5 + 0.5 * a).toFixed(2));
+    }
+  }
+  hide();
+  // flashes
+  const decay = (t0, dur) => t >= t0 && t < t0 + dur ? 1 - (t - t0) / dur : 0;
+  G.stimFlash.setAttribute('opacity', sw.mode === 'elec' && sw.x > 0 && t >= 0 && t < 1 + fd * 0.3 ? 1 : 0);
+  G.spindleGlow.setAttribute('opacity', sw.mode === 'tap' && t >= 0 ? (0.7 * decay(0, d.mech + fd)).toFixed(2) : 0);
+  G.synFlash.setAttribute('opacity', r.iaFrac > 0 ? (0.9 * decay(sw.tIaCord, d.central + fd)).toFixed(2) : 0);
+  const mG = r.M / d.mmax, hG = r.H / d.mmax;
+  const glow = (arrive, rec, g) => t >= arrive && t < rec ? 0.45 * g : decay(rec, 6 + fd) * g;
+  const gm = sw.mode === 'elec' ? glow(d.latM - d.nmj, d.latM, mG) : 0, gh = glow(sw.latH - d.nmj, sw.latH, hG);
+  if (gm >= gh) { G.muscleGlow.setAttribute('fill', 'var(--m)'); G.muscleGlow.setAttribute('opacity', (0.55 * gm).toFixed(2)); }
+  else { G.muscleGlow.setAttribute('fill', 'var(--h)'); G.muscleGlow.setAttribute('opacity', (0.55 * gh).toFixed(2)); }
+  let colBest = null;
+  G.mn.forEach((m, j) => {
+    const grp = r.mnG[j];
+    const L = sw.atSoma ? grp.h : grp.reflex;
+    const gh2 = decay(sw.tLeave, 1.2 + fd) * L;
+    const antiSurv = sw.atSoma ? grp.direct : grp.direct - grp.collided;
+    const ga = sw.mode === 'elec' ? decay(d.Tprox, 1.2 + fd) * antiSurv : 0;
+    if (gh2 >= ga) { m.glow.setAttribute('fill', 'var(--m)'); m.glow.setAttribute('opacity', (0.8 * gh2).toFixed(2)); }
+    else { m.glow.setAttribute('fill', 'var(--m)'); m.glow.setAttribute('opacity', (0.8 * ga).toFixed(2)); }
+    const c = grp.collided;
+    const cp = S.slow ? decay(sw.tCol, fd * 1.4) : 0;
+    if (sw.mode === 'elec' && c > 0.01 && cp > 0) {
+      const pt = ptOn(m.elC, m.lenC, sw.uCol);
+      const sc = (7 + 11 * Math.sqrt(c)) * (1.3 - 0.5 * cp);
+      m.col.setAttribute('transform', `translate(${pt[0]},${pt[1]}) scale(${sc.toFixed(2)})`);
+      m.col.setAttribute('opacity', Math.min(1, cp * 1.4).toFixed(2));
+      if (!colBest || c > colBest.c) colBest = { c, pt };
+    } else m.col.setAttribute('opacity', 0);
+  });
+  // callout (first few collisions, slow playback only)
+  if (colBest && !sw.calloutDone && S.slow >= 100 && S.calloutCount < 3) {
+    sw.calloutDone = true; S.calloutCount++;
+    S.callout = { until: performance.now() + 4200, pt: colBest.pt, atSoma: sw.atSoma };
+  }
+  drawCallout();
+}
+function drawCallout() {
+  const co = S.callout;
+  if (!co || performance.now() > co.until || !S.sweep) { G.callout.setAttribute('opacity', 0); return; }
+  const l1 = co.atSoma ? 'Collision at the cell body' : 'Collision!';
+  const l2 = co.atSoma ? 'Antidromic spike got there first: reflex blocked' : 'Antidromic + reflex spikes cancel out';
+  const w = S.portrait ? 262 : 280, h = 44;
+  let x = co.pt[0] + 24, y = co.pt[1] + (S.portrait ? 30 : 38);
+  x = clamp(x, 6, G.W - w - 6); y = clamp(y, 6, G.H - h - 6);
+  G.coRect.setAttribute('x', x); G.coRect.setAttribute('y', y); G.coRect.setAttribute('width', w); G.coRect.setAttribute('height', h);
+  G.coT1.setAttribute('x', x + 10); G.coT1.setAttribute('y', y + 18); G.coT1.textContent = l1;
+  G.coT2.setAttribute('x', x + 10); G.coT2.setAttribute('y', y + 35); G.coT2.textContent = l2;
+  G.coLine.setAttribute('x1', co.pt[0]); G.coLine.setAttribute('y1', co.pt[1]); G.coLine.setAttribute('x2', x + 12); G.coLine.setAttribute('y2', y);
+  const fade = Math.min(1, (co.until - performance.now()) / 600);
+  G.callout.setAttribute('opacity', fade.toFixed(2));
+}
+
+
+// ================= UI (Explore / Challenges / Key ideas) =================
+const Hname = () => S.mode === 'tap' ? 'T' : 'H';
+const modelCache = {};
+function modelCurve(prep = S.prep, mode = S.mode, mods = S.mods) {
+  const k = prep + mode + modKey(mods);
+  if (modelCache[k]) return modelCache[k];
+  const xs = [], max = mode === 'tap' ? 100 : 10, step = mode === 'tap' ? 2 : 0.1;
+  let hMax = 0, mMax = 0;
+  for (let x = 0; x <= max + 1e-9; x += step) { const r = simulate(prep, mode, x, mods, null); xs.push({ x, H: r.H, M: r.M }); }
+  const sm = xs.map((p, i) => { let h = 0, m = 0, n = 0; for (let j = Math.max(0, i - 3); j <= Math.min(xs.length - 1, i + 3); j++) { h += xs[j].H; m += xs[j].M; n++; } return { x: p.x, H: h / n, M: m / n }; });
+  xs.length = 0; sm.forEach(p => { xs.push(p); hMax = Math.max(hMax, p.H); mMax = Math.max(mMax, p.M); });
+  return (modelCache[k] = { pts: xs, hMax, mMax });
+}
+
+// ---------- live narration (insight bar) ----------
+function renderTicker(force) {
+  const sw = S.sweep; if (!sw) return;
+  if (sw.t < sw.tEnd && S.stageSweep !== sw) {
+    S.stageSweep = sw;
+    $('#stageNum').textContent = '…'; $('#stageTitle').textContent = 'Recording';
+    $('#stageText').textContent = 'Follow the pulses. The sweep draws as they arrive.'; $('#tags').innerHTML = '';
+  }
+  const shown = sw.events.filter(e => e.t <= sw.t + 1e-9);
+  if (!force && shown.length === sw.shownEvents) return;
+  sw.shownEvents = shown.length;
+  const e = shown[shown.length - 1];
+  if (sw.t >= sw.tEnd && sw.recorded) { renderStage(); return; }
+  if (e) $('#insight').innerHTML = `<span class="when">${e.t < 0 ? '−' + fmt(-e.t) : fmt(e.t)} ms</span><span>${e.h}</span>`;
+}
+function stageFor(sw) {
+  const r = sw.res;
+  if (sw.mode === 'tap') {
+    if (r.H < 0.05) return { n: '0', title: 'No visible reflex yet', text: 'The tap is too gentle to fire enough spindle endings.', tip: 'Increase the tap force, or add reinforcement.' };
+    return { n: 'T', title: 'T-reflex: spindle → Ia → cord → muscle', text: 'Stretch fires the spindles. No motor axons are stimulated, so there is no M-wave.', tip: 'The tap starts at the spindle, so the T-reflex is later than the H-reflex and depends on spindle sensitivity.' };
+  }
+  const mc = modelCurve(sw.prep, sw.mode, sw.mods);
+  const nRef = r.units.filter(u => u.reflex).length, nCol = r.units.filter(u => u.collided).length, colF = nRef ? nCol / nRef : 0;
+  if (r.iaFrac === 0 && r.M < 0.05) return { n: '0', title: 'Below threshold', text: 'No axons reached threshold at this current.', tip: 'Ia afferents are the largest axons, so they will be the first to fire as you raise the current.' };
+  if (r.H < 0.05 && r.M < 0.05) return { n: '0', title: 'Ia fibres firing, no reflex yet', text: 'The Ia volley is too small to bring motor neurons to threshold.', tip: 'Raise the current: more Ia fibres means more synaptic input to the motor neurons.' };
+  if (r.M < 0.05) return { n: '1', title: 'Ia fibres recruited first', text: 'The reflex route is active; no motor axons fired directly.', tip: 'The H-reflex takes the long route through the spinal cord, so it appears later on the EMG.' };
+  if (r.H >= 0.8 * mc.hMax && r.M < 0.35 * mc.mMax) return { n: '2', title: 'H-reflex near Hmax', text: 'More Ia input has recruited more of the motor-neuron pool.', tip: 'Hmax usually sits where the M-wave is just appearing.' };
+  if (colF < 0.3) return { n: '3', title: 'Motor axons join in', text: 'An earlier M-wave appears; antidromic spikes also head up to the cord.', tip: 'The recorded M-wave goes to the muscle. A separate antidromic volley from the same stimulus goes towards the cord.' };
+  if (r.H > 0.12 * mc.hMax) return { n: '4', title: 'Collision is reducing H', text: 'M grows while antidromic spikes cancel part of the reflex volley.', tip: 'Two trains meeting head-on on one track: action potentials cannot pass through each other.' };
+  return { n: '5', title: 'M near Mmax; H almost gone', text: 'Nearly every motor axon fires directly, so collision blocks the reflex.', tip: 'The Ia afferents are still firing. H disappears because the returning reflex volley is blocked.' };
+}
+function renderStage() {
+  const sw = S.lastSweep && S.lastSweep.prep === S.prep && S.lastSweep.mode === S.mode ? S.lastSweep : null;
+  if (!sw) {
+    $('#stageNum').textContent = '–'; $('#stageTitle').textContent = 'Ready';
+    $('#stageText').textContent = S.mode === 'tap' ? 'Set a tap force and press Tap.' : 'Set a current and press Stimulate.';
+    $('#tags').innerHTML = '';
+    $('#insight').innerHTML = `<span class="when">Watch for</span><span>${S.mode === 'tap' ? 'The tap starts at the spindle, not at the nerve.' : 'The H-reflex takes the long route through the spinal cord, so it appears later on the EMG.'}</span>`;
+    return;
+  }
+  const s = stageFor(sw), r = sw.res, Hn = sw.mode === 'tap' ? 'T' : 'H';
+  $('#stageNum').textContent = s.n; $('#stageTitle').textContent = s.title; $('#stageText').textContent = s.text;
+  const tags = [`<span class="tag ${r.H > 0.05 ? 'h' : 'off'}">${Hn} ${r.H > 0.05 ? 'present' : 'absent'}</span>`, `<span class="tag ${r.M > 0.05 ? 'm' : 'off'}">M ${r.M > 0.05 ? 'present' : 'absent'}</span>`];
+  const nRef = r.units.filter(u => u.reflex).length, nCol = r.units.filter(u => u.collided).length;
+  if (sw.mode === 'elec' && nCol && nCol / nRef > 0.1) tags.push(`<span class="tag c">collision ${nCol / nRef > 0.6 ? 'strong' : 'begun'}</span>`);
+  $('#tags').innerHTML = tags.join('');
+  $('#insight').innerHTML = `<span class="when">Watch for</span><span>${s.tip}</span>`;
+}
+
+// ---------- EMG canvas ----------
+const traceCv = $('#trace');
+function sizeCanvas(cv, hCss) {
+  const w = cv.parentElement.clientWidth, dpr = window.devicePixelRatio || 1;
+  if (w <= 0) return null;
+  cv.style.height = hCss + 'px';
+  if (cv.width !== Math.round(w * dpr) || cv.height !== Math.round(hCss * dpr)) { cv.width = Math.round(w * dpr); cv.height = Math.round(hCss * dpr); }
+  const ctx = cv.getContext('2d'); ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+  return { ctx, w, h: hCss };
+}
+function drawTrace() {
+  const pres = S.presenter, small = window.innerWidth < 560;
+  const c = sizeCanvas(traceCv, small ? 230 : pres ? 300 : 260); if (!c) return;
+  const { ctx, w, h } = c, P = PREPS[S.prep];
+  const col = { bg: css('--plot'), grid: css('--grid'), line: css('--line'), ink: css('--ink'), ink2: css('--ink-2'), muted: css('--muted'), h: css('--h'), m: css('--m'), stim: css('--stim') };
+  const mono = css('--f-mono') || 'monospace', sans = css('--f-body') || 'sans-serif', fz = pres ? 12.5 : 10.5;
+  const L = 40, Rm = 6, T = 6, B = 34, pw = w - L - Rm, ph = h - T - B;
+  const swA = S.sweep && S.sweep.prep === S.prep ? S.sweep : null;
+  let pk = 0; if (swA) { const i0 = Math.round(2 / swA.dt); for (let i = i0; i < swA.v.length; i++) pk = Math.max(pk, Math.abs(swA.v[i])); }
+  const yr = !swA ? 5 : [1, 2, 5, 10].find(r => r >= pk * 1.25) || 10, tMax = P.tMax;
+  const X = t => L + t / tMax * pw, Y = v => T + ph / 2 - v / yr * ph / 2;
+  ctx.clearRect(0, 0, w, h);
+  ctx.fillStyle = col.bg; ctx.fillRect(L, T, pw, ph);
+  const sw = S.sweep && S.sweep.prep === S.prep ? S.sweep : null;
+  const tNow = sw ? Math.min(sw.t, sw.tEnd) : 0;
+  let winM = null, winH = null;
+  if (sw) {
+    winM = [sw.d.latM, sw.d.latM + 6.5 * sw.sigM]; winH = [sw.latH, Math.min(tMax, sw.latH + 6.5 * sw.sigH)];
+    ctx.fillStyle = css('--m-soft'); if (sw.mode === 'elec' && sw.res.M > 0.05 && tNow >= winM[0]) ctx.fillRect(X(winM[0] - 0.6), T, X(winM[1]) - X(winM[0] - 0.6), ph);
+    ctx.fillStyle = css('--h-soft'); if (sw.res.H > 0.05 && tNow >= winH[0]) ctx.fillRect(X(winH[0] - 0.6), T, X(winH[1]) - X(winH[0] - 0.6), ph);
+  }
+  ctx.font = `${fz}px ${mono}`; ctx.lineWidth = 1; ctx.strokeStyle = col.grid; ctx.fillStyle = col.muted; ctx.textAlign = 'center'; ctx.textBaseline = 'top';
+  const tStep = pw < 360 ? 10 : 5;
+  for (let t = 0; t <= tMax + 1e-6; t += tStep) { const x = Math.round(X(t)) + .5; ctx.beginPath(); ctx.moveTo(x, T); ctx.lineTo(x, T + ph); ctx.stroke(); ctx.fillText(t, x, T + ph + 4); }
+  ctx.textAlign = 'right'; ctx.textBaseline = 'middle';
+  for (let v = -yr; v <= yr + 1e-6; v += yr / 2) { const y = Math.round(Y(v)) + .5; ctx.beginPath(); ctx.moveTo(L, y); ctx.lineTo(L + pw, y); ctx.stroke(); ctx.fillText(Math.abs(v) < 1e-9 ? '0' : String(+v.toFixed(1)), L - 5, y); }
+  ctx.strokeStyle = col.line; ctx.strokeRect(L + .5, T + .5, pw - 1, ph - 1);
+  ctx.fillStyle = col.muted; ctx.font = `600 ${fz}px ${sans}`; ctx.textAlign = 'center'; ctx.textBaseline = 'bottom';
+  ctx.fillText('Time after stimulus (ms)', L + pw / 2, h - 1);
+  ctx.save(); ctx.translate(10, T + ph / 2); ctx.rotate(-Math.PI / 2); ctx.textBaseline = 'middle'; ctx.fillText('EMG (mV)', 0, 0); ctx.restore();
+  ctx.save(); ctx.beginPath(); ctx.rect(L, T, pw, ph); ctx.clip();
+  if (S.persist) {
+    ctx.strokeStyle = col.ink2; ctx.lineWidth = 1;
+    const list = S.traces.filter(tr => tr.prep === S.prep && tr.mode === S.mode && (!sw || tr.v !== sw.v));
+    list.forEach((tr, i) => { ctx.globalAlpha = 0.08 + 0.14 * (i + 1) / list.length; ctx.beginPath(); for (let k = 0; k < tr.v.length; k += 2) { const x = X(k * tr.dt), y = Y(tr.v[k]); k ? ctx.lineTo(x, y) : ctx.moveTo(x, y); } ctx.stroke(); });
+    ctx.globalAlpha = 1;
+  }
+  if (!sw) {
+    ctx.restore();
+    ctx.fillStyle = col.muted; ctx.textAlign = 'center'; ctx.textBaseline = 'middle'; ctx.font = `${pres ? 15 : 13}px ${sans}`;
+    ctx.fillText(S.mode === 'tap' ? 'Press Tap to record a sweep' : 'Press Stimulate to record a sweep', L + pw / 2, T + ph / 2 - 20);
+    return;
+  }
+  const nNow = Math.floor(Math.max(0, tNow) / sw.dt);
+  const colAt = t => sw.res.M > 0.05 && t >= winM[0] && t <= winM[1] ? col.m : sw.res.H > 0.05 && t >= winH[0] && t <= winH[1] ? col.h : col.ink;
+  ctx.lineWidth = pres ? 2.6 : 2; ctx.lineJoin = 'round';
+  let cur = null;
+  for (let k = 0; k <= nNow; k++) {
+    const t = k * sw.dt, cc = colAt(t), x = X(t), y = Y(sw.v[k]);
+    if (cc !== cur) { if (cur) { ctx.lineTo(x, y); ctx.stroke(); } ctx.strokeStyle = cc; ctx.beginPath(); ctx.moveTo(x, y); cur = cc; } else ctx.lineTo(x, y);
+  }
+  if (cur) ctx.stroke();
+  if (sw.mode === 'elec' && sw.x > 0) { ctx.strokeStyle = col.stim; ctx.lineWidth = 2; ctx.beginPath(); ctx.moveTo(X(0) + 1, T + 4); ctx.lineTo(X(0) + 1, T + 14); ctx.stroke(); }
+  if (sw.t < sw.tEnd && sw.t >= 0) { ctx.strokeStyle = col.muted; ctx.lineWidth = 1; ctx.setLineDash([2, 3]); ctx.beginPath(); ctx.moveTo(X(tNow), T); ctx.lineTo(X(tNow), T + ph); ctx.stroke(); ctx.setLineDash([]); }
+  ctx.restore();
+  const chip = (lat, amp, win, c, name, row) => {
+    if (amp <= 0.05 || tNow < Math.min(sw.tEnd, win[1])) return;
+    ctx.font = `700 ${fz}px ${sans}`;
+    const l1 = name, l2 = `${fmt(lat)} ms · ${fmt(amp, 2)} mV`;
+    ctx.font = `${fz}px ${mono}`; const tw = Math.max(ctx.measureText(l2).width, 40) + 14;
+    const bx = clamp(X(lat) + 4, L + 4, L + pw - tw - 4), by = T + 6 + row * 36;
+    ctx.fillStyle = col.bg; ctx.strokeStyle = c; ctx.lineWidth = 1.3; ctx.beginPath(); ctx.roundRect ? ctx.roundRect(bx, by, tw, 31, 7) : ctx.rect(bx, by, tw, 31); ctx.fill(); ctx.stroke();
+    ctx.fillStyle = c; ctx.font = `700 ${fz}px ${sans}`; ctx.textAlign = 'left'; ctx.textBaseline = 'top'; ctx.fillText(l1, bx + 7, by + 4);
+    ctx.fillStyle = col.ink2; ctx.font = `${fz}px ${mono}`; ctx.fillText(l2, bx + 7, by + 17);
+  };
+  if (sw.mode === 'elec') chip(sw.d.latM, sw.res.M, winM, col.m, 'M-wave', 0);
+  chip(sw.latH, sw.res.H, winH, col.h, sw.mode === 'tap' ? 'T-reflex' : 'H-reflex', sw.mode === 'elec' && sw.res.M > 0.05 && X(sw.latH) - X(sw.d.latM) < 130 ? 1 : 0);
+}
+function renderReadouts() {
+  const sw = S.sweep && S.sweep.prep === S.prep && S.sweep.mode === S.mode ? S.sweep : null, Hn = Hname();
+  $('#hAmpLbl').textContent = `${Hn} amplitude`; $('#latLbl').textContent = S.mode === 'tap' ? 'T latency' : 'M / H latency'; $('#lgH').textContent = S.mode === 'tap' ? 'T-reflex' : 'H-reflex';
+  if (!sw) { $('#mAmp').textContent = S.mode === 'tap' ? 'absent' : '—'; $('#hAmp').textContent = '—'; $('#lats').textContent = '—'; return; }
+  const doneM = sw.t >= Math.min(sw.tEnd, sw.d.latM + 6.5 * sw.sigM), doneH = sw.t >= Math.min(sw.tEnd, sw.latH + 6.5 * sw.sigH);
+  const amp = (done, v) => !done ? '…' : v > 0.05 ? `${fmt(v, 2)} mV` : 'absent';
+  $('#mAmp').textContent = sw.mode === 'tap' ? 'absent' : amp(doneM, sw.res.M);
+  $('#hAmp').textContent = amp(doneH, sw.res.H);
+  const lat = (done, v, l) => !done ? '…' : v > 0.05 ? fmt(l) : '—';
+  $('#lats').textContent = sw.mode === 'tap' ? (doneH && sw.res.H > 0.05 ? `${fmt(sw.latH)} ms` : doneH ? '—' : '…') : `${lat(doneM, sw.res.M, sw.d.latM)} / ${lat(doneH, sw.res.H, sw.latH)} ms`;
+}
+
+// ---------- recruitment curve ----------
+function curveStats(pts) {
+  const bins = {};
+  pts.forEach(p => { const k = Math.round(p.x); (bins[k] = bins[k] || []).push(p); });
+  const means = Object.keys(bins).map(Number).sort((a, b) => a - b).map(x => { const a = bins[x]; return { x, H: a.reduce((s, p) => s + p.H, 0) / a.length, M: a.reduce((s, p) => s + p.M, 0) / a.length }; });
+  const hT = means.find(m => m.H >= 0.05), mT = means.find(m => m.M >= 0.05);
+  let hMax = null, mMax = null;
+  means.forEach(m => { if (!hMax || m.H > hMax.H) hMax = m; if (!mMax || m.M > mMax.M) mMax = m; });
+  const last = means[means.length - 1];
+  const plateau = mMax && mMax.M > 0.05 && last && last.M >= 0.94 * mMax.M && means.filter(m => m.M >= 0.92 * mMax.M).length >= 2;
+  return { means, hT, mT, hMax, mMax, plateau };
+}
+// ChatGPT-style curve: the whole modelled recruitment curve for the current condition, with a marker at the current setting.
+function renderCurve() {
+  const svg = $('#curve'), box = $('#curveBox');
+  const W = Math.max(260, box.clientWidth), H = S.presenter ? 290 : 250;
+  svg.setAttribute('viewBox', `0 0 ${W} ${H}`); svg.setAttribute('width', W); svg.setAttribute('height', H);
+  const tap = S.mode === 'tap', Hn = Hname();
+  const mc = modelCurve(), base = modKey(S.mods) ? modelCurve(S.prep, S.mode, {}) : null;
+  const xMax = tap ? 100 : 10;
+  const raw = Math.max(mc.hMax, tap ? 0 : mc.mMax, base ? Math.max(base.hMax, tap ? 0 : base.mMax) : 0, 1) * 1.1;
+  const yStep = raw > 6 ? 2 : raw > 2.5 ? 1 : 0.5, top = yStep * Math.ceil(raw / yStep);
+  const fs = S.presenter ? 13 : 10.5;
+  const L = 34, R = 12, T = 12, B = 34, pw = W - L - R, ph = H - T - B;
+  const X = x => L + x / xMax * pw, Y = v => T + ph - v / top * ph;
+  let s = '';
+  for (let v = 0; v <= top + 1e-9; v += yStep) { s += `<line x1="${L}" x2="${L + pw}" y1="${Y(v)}" y2="${Y(v)}" stroke="var(--grid)"/><text x="${L - 6}" y="${Y(v) + 3.5}" text-anchor="end" font-size="${fs}" font-family="var(--f-mono)">${+v.toFixed(1)}</text>`; }
+  for (let x = 0; x <= xMax; x += tap ? 20 : 2) s += `<line x1="${X(x)}" x2="${X(x)}" y1="${T}" y2="${T + ph}" stroke="var(--grid)"/><text x="${X(x)}" y="${T + ph + 13}" text-anchor="middle" font-size="${fs}" font-family="var(--f-mono)">${x}</text>`;
+  s += `<line x1="${L}" x2="${L + pw}" y1="${T + ph}" y2="${T + ph}" stroke="var(--muted)"/><line x1="${L}" x2="${L}" y1="${T}" y2="${T + ph}" stroke="var(--muted)"/>`;
+  s += `<text x="${L + pw / 2}" y="${H - 3}" text-anchor="middle" font-size="${fs}" font-weight="600">${tap ? 'Tap force (%)' : 'Stimulus current (mA)'}</text>`;
+  s += `<text x="10" y="${T + ph / 2}" text-anchor="middle" font-size="${fs}" font-weight="600" transform="rotate(-90 10 ${T + ph / 2})">Peak-to-peak amplitude (mV)</text>`;
+  const line = (pts, key, stroke, extra) => `<polyline points="${pts.map(p => X(p.x).toFixed(1) + ',' + Y(p[key]).toFixed(1)).join(' ')}" fill="none" stroke="${stroke}" ${extra}/>`;
+  if (base) { s += line(base.pts, 'H', 'var(--muted)', 'stroke-width="1.6" stroke-dasharray="4 4"'); if (!tap) s += line(base.pts, 'M', 'var(--muted)', 'stroke-width="1.6" stroke-dasharray="4 4"'); }
+  if (!tap) s += line(mc.pts, 'M', 'var(--m)', 'stroke-width="3" stroke-linejoin="round"');
+  s += line(mc.pts, 'H', 'var(--h)', 'stroke-width="3" stroke-linejoin="round"');
+  const hPk = mc.pts.reduce((a, p) => p.H > a.H ? p : a, mc.pts[0]);
+  s += `<text x="${clamp(X(hPk.x), L + 24, L + pw - 24)}" y="${Math.max(T + 10, Y(hPk.H) - 9)}" text-anchor="middle" font-size="${fs}" font-weight="700" fill="var(--h)">${Hn}max</text>`;
+  if (!tap) s += `<text x="${L + pw - 4}" y="${Math.max(T + 10, Y(mc.mMax) - 9)}" text-anchor="end" font-size="${fs}" font-weight="700" fill="var(--m)">Mmax</text>`;
+  // current setting
+  const x0 = X_(), cur = mc.pts.reduce((a, p) => Math.abs(p.x - x0) < Math.abs(a.x - x0) ? p : a, mc.pts[0]), cx = X(x0);
+  s += `<line x1="${cx}" x2="${cx}" y1="${T}" y2="${T + ph}" stroke="var(--gold)" stroke-width="2" stroke-dasharray="4 4"/>`;
+  if (!tap) s += `<circle cx="${cx}" cy="${Y(cur.M)}" r="5.5" fill="var(--m)" stroke="var(--panel)" stroke-width="2"/>`;
+  s += `<circle cx="${cx}" cy="${Y(cur.H)}" r="5.5" fill="var(--h)" stroke="var(--panel)" stroke-width="2"/>`;
+  svg.innerHTML = s;
+  svg.setAttribute('aria-label', `${tap ? 'Tap-response' : 'Recruitment'} curve for ${PREPS[S.prep].muscle}${modKey(S.mods) ? ' with ' + modLabel() : ''}. ${Hn}max ${fmt(mc.hMax, 1)} mV${tap ? '' : `, Mmax ${fmt(mc.mMax, 1)} mV`}.`);
+  $('#curveLegend').innerHTML = `<span><i class="sw h"></i>${Hn}</span>` + (tap ? '' : '<span><i class="sw m"></i>M</span>') + (base ? '<span><i class="sw" style="background:var(--muted)"></i>no modulation</span>' : '');
+  $('#curveTitle').textContent = tap ? 'Tap-response curve' : 'Recruitment curve';
+  $('#hMaxLbl').textContent = `${Hn}max`;
+  $('#hMax').textContent = `${fmt(mc.hMax, 1)} mV`;
+  $('#mMaxLbl').textContent = tap ? 'Direct M-wave' : 'Mmax';
+  $('#mMax').textContent = tap ? 'absent' : `${fmt(mc.mMax, 1)} mV`;
+  $('#ratioLbl').textContent = tap ? 'Pathway' : 'Hmax / Mmax';
+  $('#ratio').textContent = tap ? 'spindle reflex' : `${Math.round(100 * mc.hMax / mc.mMax)}%`;
+}
+const X_ = () => S.mode === 'elec' ? S.xElec : S.xTap;
+function modLabel() { return [S.mods.jend && 'Jendrassik', S.mods.contr && 'contraction', S.mods.age && 'ageing'].filter(Boolean).join(' + '); }
+function renderTable() {
+  const pts = S.data[dataKey()] || [], tap = S.mode === 'tap', Hn = Hname();
+  $('#tableBox').innerHTML = `<table><thead><tr><th>#</th><th>${tap ? 'Tap %' : 'mA'}</th>${tap ? '' : '<th>M p-p</th><th>M lat</th>'}<th>${Hn} p-p</th><th>${Hn} lat</th></tr></thead><tbody>` +
+    (pts.map((p, i) => `<tr><td>${i + 1}</td><td>${fmt(p.x, 0)}</td>${tap ? '' : `<td>${fmt(p.M, 2)}</td><td>${p.M > 0.05 ? fmt(p.latM) : '—'}</td>`}<td>${fmt(p.H, 2)}</td><td>${p.H > 0.05 ? fmt(p.latH) : '—'}</td></tr>`).reverse().join('') || `<tr><td colspan="6" style="text-align:left;font-family:var(--f-body)">No stimuli yet.</td></tr>`) + '</tbody></table>';
+}
+function csvText() {
+  const pts = S.data[dataKey()] || [], tap = S.mode === 'tap';
+  return [`${PREPS[S.prep].muscle}${modKey(S.mods) ? ' (' + modLabel() + ')' : ''}`, tap ? 'stimulus,tap_force_pct,T_pp_mV,T_latency_ms' : 'stimulus,current_mA,M_pp_mV,M_latency_ms,H_pp_mV,H_latency_ms']
+    .concat(pts.map((p, i) => tap ? `${i + 1},${fmt(p.x, 0)},${fmt(p.H, 3)},${p.H > 0.05 ? fmt(p.latH) : ''}` : `${i + 1},${fmt(p.x, 0)},${fmt(p.M, 3)},${p.M > 0.05 ? fmt(p.latM) : ''},${fmt(p.H, 3)},${p.H > 0.05 ? fmt(p.latH) : ''}`)).join('\n');
+}
+function curveHover(ev) {
+  const tip = $('#tip'), g = S.curveGeom; if (!g || !g.pts.length) { tip.hidden = true; return; }
+  const r = $('#curve').getBoundingClientRect(), mx = ev.clientX - r.left, my = ev.clientY - r.top;
+  let best = null;
+  g.pts.forEach(p => ['H', 'M'].forEach(k => { if (g.tap && k === 'M') return; const dx = g.X(p.x) - mx, dy = g.Y(p[k]) - my, dd = dx * dx + dy * dy; if (dd < 196 && (!best || dd < best.dd)) best = { p, k, dd }; }));
+  if (!best) { tip.hidden = true; return; }
+  tip.hidden = false; tip.textContent = `${fmt(best.p.x, 0)} ${g.tap ? '%' : 'mA'} · ${best.k === 'H' ? Hname() : 'M'} ${fmt(best.p[best.k], 2)} mV`;
+  tip.style.left = g.X(best.p.x) + 'px'; tip.style.top = g.Y(best.p[best.k]) + 'px';
+}
+
+// ---------- controls ----------
+function syncControls() {
+  const tap = S.mode === 'tap', P = PREPS[S.prep];
+  const sl = $('#intensity');
+  sl.min = 0; sl.max = tap ? 100 : 10; sl.step = tap ? 5 : 1; sl.value = X_();
+  $('#sliderLabel').textContent = tap ? 'Tap force' : 'Stimulus current';
+  const v = tap ? `${Math.round(S.xTap)}%` : `${fmt(S.xElec, 0)} mA`;
+  $('#stimValue').textContent = v; $('#dockVal').textContent = v;
+  $('#ticks').innerHTML = tap ? '<span>0</span><span>50</span><span>100%</span>' : '<span>0</span><span>5</span><span>10 mA</span>';
+  $('#pulseNote').textContent = tap ? `Reflex hammer on the ${P.tendon}` : '1 ms pulse · class sweep 2–10 mA';
+  $('#prepNote').textContent = S.prep === 'fcr' ? 'Your PowerLab practical setup' : 'Comparison preparation';
+  $('#stimulateBtn').textContent = tap ? '▶ Tap' : '▶ Stimulate';
+  $('#sweepBtn').textContent = S.auto ? 'Stop sweep' : 'Auto-sweep';
+  $$('#segPrep button').forEach(b => b.setAttribute('aria-pressed', b.dataset.prep === S.prep));
+  $$('#segMode button').forEach(b => b.setAttribute('aria-pressed', b.dataset.mode === S.mode));
+  $$('#segSpeed button').forEach(b => b.setAttribute('aria-pressed', +b.dataset.speed === S.slow));
+  $('#modNote').textContent = tap ? 'changes T' : 'changes H, not M';
+  $('#chkJend').checked = S.mods.jend; $('#chkContr').checked = S.mods.contr; $('#chkAge').checked = S.mods.age;
+  $('#btnPresenter').setAttribute('aria-pressed', S.presenter); $('#btnPresenter').textContent = S.presenter ? 'Exit presenter' : 'Presenter mode';
+  $('#btnTheme').textContent = 'Theme: ' + S.theme;
+  updateLabels();
+}
+function syncPause() { $('#btnPause').textContent = S.paused ? 'Resume' : 'Pause'; $('#btnPause').setAttribute('aria-pressed', S.paused); }
+function setX(v) { if (S.mode === 'elec') S.xElec = clamp(Math.round(v), 0, 10); else S.xTap = clamp(Math.round(v / 5) * 5, 0, 100); syncControls(); renderCurve(); }
+function stopAuto() { if (S.auto) { clearTimeout(S.auto.timer); S.auto = null; syncControls(); } }
+function runAuto(xs, gap = 420) {
+  stopAuto(); S.auto = { xs, i: 0, timer: null }; syncControls();
+  const step = () => {
+    if (!S.auto) return;
+    if (S.auto.i >= S.auto.xs.length) { stopAuto(); renderStage(); return; }
+    setX(S.auto.xs[S.auto.i++]); fire(); syncControls();
+    S.auto.timer = setTimeout(step, gap);
+  };
+  step();
+}
+function sweepList() { const xs = []; if (S.mode === 'elec') for (let v = 2; v <= 10; v++) xs.push(v); else for (let v = 10; v <= 100; v += 10) xs.push(v); return xs; }
+function renderAll(force) { renderSchem(); drawTrace(); renderReadouts(); renderTicker(force); }
+function resetView() {
+  finishSweep(); S.sweep = null; S.callout = null;
+  syncControls(); renderSchem(); drawTrace(); renderReadouts(); renderCurve(); renderStage();
+}
+// hook sweep completion into the stage strip
+const _finish = finishSweep;
+finishSweep = function () { const sw = S.sweep; const was = sw && !sw.recorded; _finish(); if (was) { S.lastSweep = sw; if (!S.auto) renderStage(); } };
+
+// ---------- animation loop ----------
+let lastTs = null;
+function loop(ts) {
+  const dtReal = lastTs == null ? 0 : Math.min(100, ts - lastTs); lastTs = ts;
+  const sw = S.sweep;
+  if (sw && !S.paused && sw.t < sw.tEnd && S.slow > 0) {
+    sw.t = Math.min(sw.tEnd, sw.t + dtReal / S.slow);
+    if (sw.t >= sw.tEnd) finishSweep();
+    renderAll();
+  } else if (S.callout && G) drawCallout();
+  requestAnimationFrame(loop);
+}
+
+// ---------- challenges ----------
+const CH = [
+  { id: 'low', title: 'At low current, which response appears first?',
+    prompt: 'You begin the FCR practical at 2 mA. Predict what the EMG will show.',
+    options: ['A small M-wave, with no H-reflex', 'A small H-reflex, with no M-wave', 'M and H always appear together'], correct: 1,
+    setup: { prep: 'fcr', mode: 'elec', x: 2, slow: 200 }, action: 'fire',
+    explanation: 'Ia afferents are the largest axons in the median nerve, and current from the electrode enters large axons most easily. At 2 mA only Ia fibres fire, so the only response is a small H-reflex at about 22 ms. Motor axons need about 4 mA before an M-wave appears.',
+    analogy: 'Analogy: the lightest sleepers wake first.' },
+  { id: 'early', title: 'Why does M appear earlier on the EMG?',
+    prompt: 'At 5 mA both waves end in the same muscle. What makes the M-wave latency shorter?',
+    options: ['It travels faster because it is bigger', 'The H-reflex waits inside the muscle', 'It takes the direct route from the electrode to the muscle'], correct: 2,
+    setup: { prep: 'fcr', mode: 'elec', x: 5, slow: 200 }, action: 'fire',
+    explanation: 'The M-wave comes from impulses running straight down motor axons to the muscle (about 12 ms). The H-reflex runs up the Ia afferent to the spinal cord, crosses one synapse, and comes all the way back down the motor axon (about 22 ms). The speeds are similar; the distance is not.',
+    analogy: 'Analogy: M takes the highway; H takes the detour through the spinal cord.' },
+  { id: 'both', title: 'What is the faint ring heading down the Ia fibre?',
+    prompt: 'At 3 mA, watch the Ia fibres just after the stimulus. A faint ring runs from the electrode towards the muscle. What is it?',
+    options: ['An Ia action potential travelling backwards; it stops at the spindle', 'Stimulus current leaking along the nerve', 'The start of the M-wave'], correct: 0,
+    setup: { prep: 'fcr', mode: 'elec', x: 3, slow: 500 }, action: 'fire',
+    explanation: 'The current only flows under the electrode. The patch of axon it excites has resting membrane on both sides, so the action potential spreads both ways. The spike heading to the cord drives the reflex. The one heading to the spindle stops there, because there is no synapse to pass it on. Motor axons do exactly the same, and that matters at higher currents.',
+    analogy: 'Analogy: a shout in the middle of a corridor travels both ways, but only one end has someone listening.' },
+  { id: 'hmax', title: 'Where does Hmax occur?',
+    prompt: 'Run the class sweep, 2–10 mA. When the H-reflex is at its largest, how big is the M-wave?',
+    options: ['Absent', 'Small, just appearing', 'Already at Mmax'], correct: 1,
+    setup: { prep: 'fcr', mode: 'elec', x: 2, slow: 200, clear: true }, action: 'sweep',
+    explanation: 'H peaks at about 4–5 mA, just as the M-wave appears. Mmax is the whole motor pool, so Hmax/Mmax is the fraction of the pool the reflex can recruit. The ratio cancels out electrode position, skin and muscle size. Here FCR gives about 0.25; the FCR reflex is often small at rest.',
+    analogy: 'Analogy: Hmax/Mmax is attendance divided by enrolment.' },
+  { id: 'high', title: 'Why does H shrink at high current?',
+    prompt: 'At 9 mA the M-wave is large and every Ia fibre is firing. What happens to the H-reflex?',
+    options: ['It grows, because more Ia fibres fire', 'It disappears, because the Ia fibres stop firing', 'It disappears, because backward motor spikes block the reflex'], correct: 2,
+    setup: { prep: 'fcr', mode: 'elec', x: 9, slow: 500 }, action: 'fire',
+    explanation: 'The strong stimulus fires almost every motor axon, and each spike travels both ways: down to the muscle (the M-wave) and back up towards the cord. In the short FCR pathway that backward spike reaches the motor neuron just before the reflex would fire, leaving it unable to fire. In the longer soleus pathway the two spikes meet head-on in the axon. Either way, no reflex spike gets through. More current means more blocked axons: the falling side of the curve.',
+    analogy: 'Analogy: two trains on one single track.' },
+  { id: 'mcord', title: 'Does the M-wave travel to the spinal cord?',
+    prompt: 'At 6 mA, choose the most accurate statement.',
+    options: ['Yes: the M-wave loops through the cord before reaching the muscle', 'The M-wave travels to the muscle; a separate backward volley travels to the cord', 'Nothing from the motor axons ever travels towards the cord'], correct: 1,
+    setup: { prep: 'fcr', mode: 'elec', x: 6, slow: 200 }, action: 'fire',
+    explanation: 'The M-wave is the muscle response to impulses running from the electrode to the muscle. The same stimulus also sends antidromic (backward) impulses up the motor axons. They are not the M-wave, but they are what cancels the reflex.',
+    analogy: 'Analogy: one switch sends traffic both ways; the muscle only records what arrives there.' },
+  { id: 'jend', title: 'What should the Jendrassik manoeuvre change?',
+    prompt: 'At 3 mA, the participant clenches their teeth and pulls their hooked fingers apart. Predict the effect.',
+    options: ['M larger, H unchanged', 'Both latencies roughly halve', 'H larger, M unchanged'], correct: 2,
+    setup: { prep: 'fcr', mode: 'elec', x: 3, mods: { jend: true }, slow: 200 }, action: 'fire',
+    explanation: 'Reinforcement acts in the spinal cord: less presynaptic inhibition of Ia terminals and more excitable motor neurons, so the same Ia volley recruits more motor neurons. The M-wave never passes through the cord, so it does not change. Compare the curve with the dashed baseline.',
+    analogy: 'Analogy: the motor neurons have moved closer to the start line; the stimulator dial has not moved.' },
+  { id: 'contr', title: 'What does a light background contraction do?',
+    prompt: 'At 2 mA the participant gently flexes their wrist. Predict the change.',
+    options: ['H grows, and the baseline gets noisier', 'An M-wave appears', 'Nothing changes'], correct: 0,
+    setup: { prep: 'fcr', mode: 'elec', x: 2, mods: { contr: true }, slow: 200 }, action: 'fire',
+    explanation: 'Descending drive brings many motor neurons close to threshold, so a small Ia volley recruits more of them. Neurons that are already firing add background EMG. The M-wave depends only on the axons under the electrode, so it does not change. In the lab, keep posture and contraction the same between stimuli.',
+    analogy: 'Analogy: sprinters already leaning forward need only a small push.' },
+  { id: 'tap', title: 'What is missing after a tendon tap?',
+    prompt: 'Switch from electrical stimulation to a tap on the FCR tendon. Predict the recording.',
+    options: ['A large M-wave, with no reflex', 'A reflex (T-wave), with no M-wave', 'The same M and H pair as before'], correct: 1,
+    setup: { prep: 'fcr', mode: 'tap', x: 70, slow: 200 }, action: 'fire',
+    explanation: 'The tap stretches the muscle spindles, so the reflex starts at the spindle rather than at the nerve. No motor axons are stimulated, so there is no M-wave and no collision. The T-wave arrives later than H (about 33 ms here) because the volley has to start at the spindle, inside the muscle, and travel the whole length of the nerve.',
+    analogy: 'Analogy: the tap starts the journey at the sensor, not at the junction in the nerve.' },
+  { id: 'soleus', title: 'Why is the soleus H-reflex later?',
+    prompt: 'Compare FCR with soleus (tibial nerve behind the knee). What mainly explains the longer soleus H latency?',
+    options: ['Soleus uses more spinal synapses', 'Leg axons conduct very slowly', 'The pathway is physically longer'], correct: 2,
+    setup: { prep: 'soleus', mode: 'elec', x: 5, slow: 200 }, action: 'fire',
+    explanation: 'Both reflexes cross one synapse and conduct at similar speeds. The soleus loop runs from behind the knee to the S1 segment and back, so the H-reflex arrives at about 30 ms. Limb length changes latency, so clinicians compare with height-adjusted norms.',
+    analogy: 'Analogy: the same return trip, from a more distant station.' },
+  { id: 'age', title: 'How does ageing change the recording?',
+    prompt: 'At 4 mA, switch on the ageing example. Predict the change.',
+    options: ['Shorter latencies and a larger H', 'Longer latencies and a smaller H', 'No change'], correct: 1,
+    setup: { prep: 'fcr', mode: 'elec', x: 4, mods: { age: true }, slow: 200 }, action: 'fire',
+    explanation: 'Conduction slows with age (loss of the largest myelinated fibres, thinner myelin), so both latencies lengthen. Fewer motor units shrink Mmax, and reduced spinal excitability shrinks H further. In some healthy people over 60 the soleus H-reflex cannot be evoked, so compare with age-matched norms.',
+    analogy: 'Analogy: an older road network with lower speed limits and fewer lanes.' }
+];
+function saveProgress() { store.set('hx3-progress', S.progress); }
+function chDone(id) { const p = S.progress[id]; return !!(p && p.revealed); }
+function renderChallenges() {
+  const i = S.chIdx, c = CH[i], pr = S.progress[c.id] || {};
+  const n = CH.filter(x => chDone(x.id)).length;
+  $('#chProgress').textContent = `${n} of ${CH.length} explained`; $('#chBar').style.width = (100 * n / CH.length) + '%'; $('#tabCount').textContent = `${n}/${CH.length}`;
+  $('#chList').innerHTML = CH.map((x, k) => `<button class="ch-link ${k === i ? 'active' : ''}" data-k="${k}"><span class="num">${k + 1}</span><span>${x.title}</span><span class="ok">${chDone(x.id) ? '✓' : ''}</span></button>`).join('');
+  const picked = pr.pick != null, obs = !!pr.observed, rev = !!pr.revealed;
+  const cls = k => rev ? (k === c.correct ? 'right' : k === pr.pick ? 'wrong' : '') : (k === pr.pick ? 'sel' : '');
+  $('#chCard').innerHTML = `
+    <div class="kicker">Challenge ${i + 1} · Predict → observe → explain</div>
+    <h2>${c.title}</h2>
+    <p class="prompt">${c.prompt}</p>
+    <div class="preds" role="radiogroup" aria-label="Your prediction">${c.options.map((o, k) => `<button class="pred ${cls(k)}" role="radio" aria-checked="${pr.pick === k}" data-k="${k}" ${rev ? 'disabled' : ''}>${o}</button>`).join('')}</div>
+    <div class="ch-actions">
+      <button class="btn primary" id="observeBtn" ${picked ? '' : 'disabled'}>${obs ? 'Observe again' : 'Observe in explorer'}</button>
+      <button class="btn ${picked && !rev ? 'accent' : ''}" id="revealBtn" ${picked && !rev ? '' : 'disabled'}>Reveal explanation</button>
+      <button class="btn" id="nextBtn">Next challenge</button>
+    </div>
+    ${rev ? `<div class="explain"><h3>${pr.pick === c.correct ? 'Your prediction fits the physiology.' : 'Compare your prediction with the pathway.'}</h3><p>${c.explanation}</p><p class="analogy">${c.analogy}</p></div>` : ''}`;
+}
+function applySetup(su) {
+  stopAuto();
+  S.prep = su.prep; S.mode = su.mode; const m = su.mods || {};
+  S.mods = { jend: !!m.jend, contr: !!m.contr, age: !!m.age };
+  if (su.mode === 'elec') S.xElec = su.x; else S.xTap = su.x;
+  if (su.slow != null) S.slow = su.slow;
+  S.range = su.range || 5;
+  if (su.clear) delete S.data[dataKey()];
+  S.lastSweep = null;
+  buildSchematic(); resetView();
+}
+function showTab(name) {
+  S.tab = name;
+  ['explore', 'challenges', 'ideas'].forEach(n => { $(`#tab-${n}`).setAttribute('aria-selected', n === name); $(`#panel-${n}`).hidden = n !== name; });
+  document.body.classList.toggle('on-explore', name === 'explore');
+  if (name === 'challenges') renderChallenges();
+  if (name === 'explore') { requestAnimationFrame(() => { drawTrace(); renderCurve(); }); }
+  window.scrollTo({ top: 0 });
+}
+
+// ---------- wiring ----------
+function bind() {
+  $$('.tab').forEach(b => b.addEventListener('click', () => showTab(b.id.replace('tab-', ''))));
+  $('#intensity').addEventListener('input', e => setX(+e.target.value));
+  $('#minusBtn').addEventListener('click', () => setX(X_() - (S.mode === 'elec' ? 1 : 5)));
+  $('#plusBtn').addEventListener('click', () => setX(X_() + (S.mode === 'elec' ? 1 : 5)));
+  $('#stimulateBtn').addEventListener('click', () => { stopAuto(); fire(); });
+  $('#sweepBtn').addEventListener('click', () => { if (S.auto) stopAuto(); else runAuto(sweepList()); });
+  $$('#segPrep button').forEach(b => b.addEventListener('click', () => { stopAuto(); S.prep = b.dataset.prep; S.lastSweep = null; buildSchematic(); resetView(); }));
+  $$('#segMode button').forEach(b => b.addEventListener('click', () => { stopAuto(); S.mode = b.dataset.mode; S.lastSweep = null; resetView(); }));
+  $$('#segSpeed button').forEach(b => b.addEventListener('click', () => {
+    S.slow = +b.dataset.speed;
+    if (S.slow === 0 && S.sweep && S.sweep.t < S.sweep.tEnd) { S.sweep.t = S.sweep.tEnd; finishSweep(); }
+    syncControls(); renderAll(true);
+  }));
+  $('#btnPause').addEventListener('click', () => { S.paused = !S.paused; syncPause(); });
+  ['#chkJend', '#chkContr', '#chkAge'].forEach(id => $(id).addEventListener('change', () => {
+    stopAuto(); finishSweep(); S.mods = { jend: $('#chkJend').checked, contr: $('#chkContr').checked, age: $('#chkAge').checked }; S.lastSweep = null; syncControls(); renderCurve(); renderStage();
+  }));
+  $('#btnClearTrace').addEventListener('click', () => { S.traces = []; drawTrace(); });
+  $('#backBtn').addEventListener('click', () => { $('#backBtn').hidden = true; showTab('challenges'); });
+  $('#chList').addEventListener('click', e => { const b = e.target.closest('.ch-link'); if (!b) return; S.chIdx = +b.dataset.k; renderChallenges(); });
+  $('#chCard').addEventListener('click', e => {
+    const c = CH[S.chIdx], pr = S.progress[c.id] = S.progress[c.id] || {};
+    const p = e.target.closest('.pred');
+    if (p && !pr.revealed) { pr.pick = +p.dataset.k; saveProgress(); renderChallenges(); return; }
+    const id = e.target.id;
+    if (id === 'observeBtn') {
+      pr.observed = true; saveProgress();
+      applySetup(c.setup); showTab('explore'); $('#backBtn').hidden = false;
+      setTimeout(() => { if (c.action === 'sweep') runAuto(sweepList()); else fire(); }, 450);
+    } else if (id === 'revealBtn') { pr.revealed = true; saveProgress(); renderChallenges(); }
+    else if (id === 'nextBtn') { S.chIdx = (S.chIdx + 1) % CH.length; renderChallenges(); }
+  });
+  $('#btnPresenter').addEventListener('click', () => { S.presenter = !S.presenter; document.documentElement.classList.toggle('presenter', S.presenter); syncControls(); drawTrace(); renderCurve(); });
+  $('#btnTheme').addEventListener('click', () => {
+    S.theme = S.theme === 'auto' ? 'light' : S.theme === 'light' ? 'dark' : 'auto';
+    if (S.theme === 'auto') document.documentElement.removeAttribute('data-theme'); else document.documentElement.setAttribute('data-theme', S.theme);
+    syncControls(); drawTrace(); renderCurve();
+  });
+  try { matchMedia('(prefers-color-scheme: dark)').addEventListener('change', () => { drawTrace(); renderCurve(); }); } catch (e) { }
+  $('#btnAbout').addEventListener('click', () => { const d = $('#about'); try { d.showModal(); } catch (e) { d.setAttribute('open', ''); } });
+  $('#closeAbout').addEventListener('click', () => $('#about').close());
+  $('#about').addEventListener('click', e => { if (e.target === $('#about')) $('#about').close(); });
+  document.addEventListener('keydown', e => {
+    if (S.tab !== 'explore' || $('#about').open) return;
+    const tag = (e.target.tagName || '').toLowerCase();
+    if (tag === 'input' || tag === 'select' || tag === 'textarea' || e.metaKey || e.ctrlKey || e.altKey) return;
+    if (e.key === ' ' && tag !== 'button') { e.preventDefault(); stopAuto(); fire(); }
+    else if (e.key === 'ArrowRight') { e.preventDefault(); setX(X_() + (S.mode === 'elec' ? 1 : 5)); }
+    else if (e.key === 'ArrowLeft') { e.preventDefault(); setX(X_() - (S.mode === 'elec' ? 1 : 5)); }
+    else if (e.key === 'p' || e.key === 'P') { S.paused = !S.paused; syncPause(); }
+  });
+  const mq = matchMedia('(max-width: 720px)');
+  const onMq = () => { const p = mq.matches; if (p !== S.portrait || !G) { S.portrait = p; document.documentElement.classList.toggle('portrait', p); buildSchematic(); renderAll(true); } };
+  try { mq.addEventListener('change', onMq); } catch (e) { mq.addListener(onMq); }
+  S.portrait = mq.matches; document.documentElement.classList.toggle('portrait', S.portrait);
+  let rz = null;
+  const ro = new ResizeObserver(() => { cancelAnimationFrame(rz); rz = requestAnimationFrame(() => { drawTrace(); renderCurve(); }); });
+  ro.observe($('#cardTrace')); ro.observe($('#cardCurve'));
+}
+
+function init() {
+  bind();
+  document.body.classList.add('on-explore');
+  buildSchematic();
+  // Example class sweep (FCR, 2–10 mA) so the curve is not empty on first load.
+  const saved = S.slow; S.slow = 0;
+  for (let v = 2; v <= 10; v++) { S.xElec = v; S.sweep = makeSweep(); S.sweep.t = S.sweep.tEnd; finishSweep(); }
+  S.slow = saved; S.xElec = 2; S.traces = []; S.sweep = null; S.lastSweep = null; S.sweepNo = 0;
+  syncControls(); renderAll(true); renderCurve(); renderStage(); renderChallenges();
+  $('#insight').innerHTML = '<span class="when">Start here</span><span>Press <b>Stimulate</b> at 2 mA and follow the pulses. The EMG draws as they arrive.</span>';
+  requestAnimationFrame(loop);
+}
+window.__hx = { G: () => G, S, renderAll, renderCurve, fire, setX, simulate, derive, applySetup, CH, dataKey, curveStats, showTab, modelCurve };
+init();
+
+</script>
+</body>
+</html>
